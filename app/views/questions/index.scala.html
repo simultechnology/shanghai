@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>問題登録ページ</title>
+</head>
+<style>
+    input[type=text] {
+        width: 450px;
+    }
+</style>
+<body>
+<p>
+    ■ 問題登録ページ
+<form action="/questions/insert" method="POST">
+    <div>
+        school_year :
+        <select name="school_year">
+            @for(i <- 1 to 5) {
+                <option>@i</option>
+            }
+        </select>
+    </div>
+    <div>
+        level :
+        <select name="level">
+            @for(i <- 1 to 5) {
+            <option>@i</option>
+            }
+        </select>
+    </div>
+    <div>
+        subject :
+        <input type="text"  name="subject"/>
+    </div>
+    <div>
+        content :
+        <input type="text"  name="content"/>
+    </div>
+    <div>
+        choice1 :
+        <input type="text"  name="choice1"/>
+    </div>
+    <div>
+        choice2 :
+        <input type="text"  name="choice2"/>
+    </div>
+    <div>
+        choice3 :
+        <input type="text"  name="choice3"/>
+    </div>
+    <div>
+        choice4 :
+        <input type="text"  name="choice4"/>
+    </div>
+    <div>
+        answer :
+        <select name="answer">
+            @for(i <- 1 to 4) {
+            <option>@i</option>
+            }
+        </select>
+    </div>
+
+    <div>
+        <input type="submit" value="登録する"/>
+    </div>
+</form>
+</p>
+</body>
+</html>
