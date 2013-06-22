@@ -1,0 +1,13 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                           controllers.Welcome.index()
+GET     /sample                           controllers.Application.index()
+GET     /top                        controllers.Uranai.showTop()
+POST    /name                       controllers.Uranai.showNameResult()
+GET     /type/:id                   controllers.Uranai.showType(id :Integer)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)

@@ -1,0 +1,19 @@
+@(name: String)
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>名前占い結果</title>
+</head>
+<body>
+@name さんの今日の運勢は最高です！
+<form action="/type/1" method="GET">
+    <input type="hidden" name="name" value="@name"/>
+    <input type="submit" value="恋愛運"/>
+</form>
+<form action="/type/2" method="GET">
+    <input type="hidden" name="name" value="@name"/>
+    <input type="submit" value="金運"/>
+</form>
+</body>
+</html>

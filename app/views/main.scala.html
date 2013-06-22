@@ -1,0 +1,6 @@
+@(parent: models.Parent)
+
+<div>@parent</div>
+@for(child <- parent.children) {
+    <div>└ @child</div>
+}
