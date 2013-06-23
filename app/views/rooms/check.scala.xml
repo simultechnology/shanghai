@@ -1,0 +1,11 @@
+@(rooms : List[models.Room])<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <rooms>
+        @for(room <- rooms) {
+            <room>
+                <room_number>@room.room_number</room_number>
+                <status>@if(room.status){OK}else{NG}</status>
+            </room>
+        }
+    </rooms>
+</response>

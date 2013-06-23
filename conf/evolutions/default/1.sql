@@ -36,11 +36,19 @@ create table question (
   constraint pk_question primary key (id))
 ;
 
+create table room (
+  room_number               integer not null,
+  status                    boolean,
+  constraint pk_room primary key (room_number))
+;
+
 create sequence child_seq;
 
 create sequence parent_seq;
 
 create sequence question_seq;
+
+create sequence room_seq;
 
 alter table child add constraint fk_child_parent_1 foreign key (parent_id) references parent (id);
 create index ix_child_parent_1 on child (parent_id);
@@ -55,9 +63,13 @@ drop table if exists parent cascade;
 
 drop table if exists question cascade;
 
+drop table if exists room cascade;
+
 drop sequence if exists child_seq;
 
 drop sequence if exists parent_seq;
 
 drop sequence if exists question_seq;
+
+drop sequence if exists room_seq;
 

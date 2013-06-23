@@ -13,6 +13,8 @@ GET     /questions/file             controllers.Questions.file()
 POST    /questions/upload           controllers.Questions.upload()
 POST    /questions/insert           controllers.Questions.insert()
 GET     /questions/list             controllers.Questions.list()
+GET     /rooms/setup                controllers.Rooms.setup()
+GET     /rooms/check                controllers.Rooms.check()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
