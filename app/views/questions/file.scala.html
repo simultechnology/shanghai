@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>問題登録ページ【CSV】</title>
+</head>
+<body>
+@helper.form(action = routes.Questions.upload, 'enctype -> "multipart/form-data") {
+
+<input type="file" name="csv">
+
+<p>
+    <input type="submit">
+</p>
+
+}
+</body>
+</html>

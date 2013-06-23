@@ -1,16 +1,22 @@
 package controllers;
 
+import com.avaje.ebean.ExpressionList;
 import models.Question;
+import org.apache.commons.csv.CSVUtils;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.db.ebean.Model;
+import play.db.ebean.Model.Finder;
 import play.mvc.Controller;
+import play.mvc.Http.*;
 import play.mvc.Result;
 import views.html.name_result;
-import views.html.top;
 import views.html.type_result;
-import views.html.questions.index;
+import views.html.questions.*;
+import views.xml.questions.*;
 
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class Questions extends Controller {
 
@@ -48,6 +54,91 @@ public class Questions extends Controller {
         question.save();
 
         return ok("OK");
+    }
+
+    public static Result file() {
+
+        return ok(file.render());
+    }
+
+    public static Result upload() {
+        MultipartFormData body = request().body().asMultipartFormData();
+        MultipartFormData.FilePart csv = body.getFile("csv");
+        if (csv != null) {
+            String fileName = csv.getFilename();
+            String contentType = csv.getContentType();
+            File file = csv.getFile();
+
+            BufferedReader br = null;
+            try {
+                br = new BufferedReader(new FileReader(file));
+                StringBuilder sb = new StringBuilder();
+                String line = br.readLine();
+                String[] columns = line.split(",");
+
+                while (line != null) {
+                    line = br.readLine();
+
+                    if (line != null) {
+                        String[] val = CSVUtils.parseLine(line.toString());
+
+                        if (val[1] == null || val[1].length() == 0) {
+                            continue;
+                        }
+
+                        Question question = new Question();
+                        question.school_year = Integer.parseInt(val[1]);
+                        question.level = Integer.parseInt(val[2]);
+                        question.subject = val[3];
+                        question.content = val[4];
+                        question.choice1 = val[5];
+                        question.choice2 = val[6];
+                        question.choice3 = val[7];
+                        question.choice4 = val[8];
+                        question.answer = Integer.parseInt(val[9]);
+                        question.save();
+                    }
+                }
+                return ok("OK");
+            } catch (Exception e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } finally {
+                if (br != null) {
+                    try {
+                        br.close();
+                    } catch (IOException e) {
+                    }
+                }
+            }
+            return ok("File upload failed");
+        } else {
+            flash("error", "Missing file");
+            return redirect(routes.Application.index());
+        }
+    }
+
+    public static Result list() {
+
+        Finder<Long, Question> finder = new Model.Finder<Long, Question>(Long.class,
+                Question.class);
+        List<Object> questionIds = finder.findIds();
+
+        Set<Long> randomIds = new HashSet<Long>();
+
+        int questionsTotalNum = questionIds.size();
+        while (randomIds.size() < 20) {
+            Random rand = new Random();
+            int idx = rand.nextInt(questionsTotalNum);
+            randomIds.add((Long) questionIds.get(idx));
+        }
+
+        List<Long> randomIdList = new ArrayList<Long>();
+        randomIdList.addAll(randomIds);
+
+        ExpressionList<Question> expressionList = finder.where().idIn(randomIdList);
+        List<Question> questionList = expressionList.findList();
+
+        return ok(questions.render(questionList));
     }
 
 

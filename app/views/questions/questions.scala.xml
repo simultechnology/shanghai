@@ -1,0 +1,20 @@
+@(questionList : List[models.Question])<?xml version="1.0" encoding="UTF-8"?>
+<response>
+    <questions>
+        <questions_id>777</questions_id>
+        @for(question <- questionList) {
+            <question>
+                <id>@question.id</id>
+                <school_year>@question.school_year</school_year>
+                <level>@question.level</level>
+                <subject>@question.subject</subject>
+                <content>@question.content</content>
+                <choice id="1">@question.choice1</choice>
+                <choice id="2">@question.choice2</choice>
+                <choice id="3">@question.choice3</choice>
+                <choice id="4">@question.choice4</choice>
+                <answer>@question.answer</answer>
+            </question>
+        }
+    </questions>
+</response>
