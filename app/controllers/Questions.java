@@ -2,6 +2,7 @@ package controllers;
 
 import com.avaje.ebean.ExpressionList;
 import models.Question;
+import models.Room;
 import org.apache.commons.csv.CSVUtils;
 import play.data.DynamicForm;
 import play.data.Form;
@@ -117,11 +118,23 @@ public class Questions extends Controller {
         }
     }
 
-    public static Result list() {
+    public static Result list(int room_number) {
+
+        Finder<Long, Room> roomFinder = new Model.Finder<Long, Room>(Long.class,
+                Room.class);
+        Room selectedRoom = roomFinder.byId(Long.valueOf(room_number));
+        if (!selectedRoom.status) {
+            return ok(questions_not_available.render());
+        }
+        selectedRoom.status = false;
+        selectedRoom.save();
 
         Finder<Long, Question> finder = new Model.Finder<Long, Question>(Long.class,
                 Question.class);
         List<Object> questionIds = finder.findIds();
+        if (questionIds.size() == 0) {
+            return ok(questions_not_available.render());
+        }
 
         Set<Long> randomIds = new HashSet<Long>();
 
