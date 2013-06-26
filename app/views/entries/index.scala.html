@@ -1,0 +1,195 @@
+@(entries : List[models.Entry])<!DOCTYPE html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.min.css")" />
+
+    <style>
+      body {
+        padding-top: 60px;
+        padding-bottom: 40px;
+      }
+      select {
+        width: 100px;
+      }
+
+      input[type=button] {
+        margin-bottom: 10px;
+      }
+
+      div#content-container {
+      }
+
+      div#content-container h3 {
+        margin-bottom: 0px;
+        border: 1px solid #666;
+        text-align: center;
+        border-bottom: 0;
+        /* IE10 Consumer Preview */
+        background-image: -ms-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+        /* Mozilla Firefox */
+        background-image: -moz-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+        /* Opera */
+        background-image: -o-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+        /* Webkit (Safari/Chrome 10) */
+        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #79787A));
+        /* Webkit (Chrome 11+) */
+        background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+        /* W3C Markup, IE10 Release Preview */
+        background-image: linear-gradient(to bottom, #FFFFFF 0%, #79787A 100%);
+      }
+
+      div#left-container {
+        padding: 60px 40px 60px 0;
+        margin-right: 0px;
+        margin-left: 40px;
+        border-right: solid 1px #666;
+      }
+
+      div#right-container {
+        padding: 60px 0;
+        margin-left: 40px;
+      }
+
+      div#content-container li {
+        border: 1px solid #666;
+        background-color: #fff;
+      }
+
+      div#content-container a {
+        color: #000;
+      }
+
+      div.hero-unit {
+        padding: 0 60px;
+      }
+
+        </style>
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap-responsive.min.css")">
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
+
+        <script src="@routes.Assets.at("javascripts/vendor/modernizr-2.6.2-respond-1.1.0.min.js")"></script>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </a>
+                    <a class="brand" href="#">開始画面</a>
+                    <div class="nav-collapse collapse">
+                    </div><!--/.nav-collapse -->
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+
+            <!-- Main hero unit for a primary marketing message or call to action -->
+            <div class="hero-unit">
+              <div class="row" id="content-container">
+                <div class="span5" id="left-container">
+                  <h3>Room1対象選択</h3>
+                  <ul class="nav nav-tabs nav-stacked" id="">
+                    @for(entry <- entries) {
+                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.group_name,@entry.level</a></li>
+                    }
+                  </ul>
+                </div>
+                <div class="span5" id="right-container">
+                  <h3>Room2対象選択</h3>
+                  <ul class="nav nav-tabs nav-stacked" id="">
+                    @for(entry <- entries) {
+                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.group_name,@entry.level</a></li>
+                    }
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <footer>
+            </footer>
+            <div id="dialog" title="検索画面" style="display: none;">
+              <div>
+                <input type="text" id="search-value">
+                <input type="button" value="検索" id="do-search-button">
+              </div>
+              <div id="search-msg"></div>
+                <ul class="nav nav-tabs nav-stacked" id="search-list">
+                </ul>
+            </div>
+
+        </div> <!-- /container -->
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+        <script>window.jQuery || document.write('<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"><\/script>')</script>
+        <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.3.custom.min.js")"></script>
+
+        <script src="@routes.Assets.at("javascripts/vendor/bootstrap.min.js")"></script>
+
+        <script src="@routes.Assets.at("javascripts/plugins.js")"></script>
+        <script src="@routes.Assets.at("javascripts/main.js")"></script>
+
+        <script>
+            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+            s.parentNode.insertBefore(g,s)}(document,'script'));
+
+            $(function() {
+              $("#datepicker").datepicker({dateFormat: 'yy/mm/dd'});
+              $("#datepicker").datepicker("option", "showOn", 'button');
+              $("#datepicker").datepicker("option", "buttonImageOnly", true);
+              $("#datepicker").datepicker("option", "buttonImage", "@routes.Assets.at("images/datepicker.png")");
+
+              $("div#ui-datepicker-div").css("top", "100px");
+
+              $("#search-button").click(function() {
+                console.log($(window).height() * 0.6);
+                $("#dialog").dialog({
+                  width: "75%",
+                  maxHeight: $(window).height() * 0.6
+                });
+              });
+
+              $("#do-search-button").click(function() {
+                $("#search-msg").remove();
+                $("#search-list").children().remove();
+                var name = $("#search-value").val();
+                $.get("/schools/list/" + name,
+                    function(data){
+                      console.log(data);
+                      var status =data.status;
+                      if (status === 'OK' && data.schools && data.schools.length > 0) {
+                        $(data.schools).each(function(idx, school) {
+                          var li = $("<li><a>" + school.name + "</a></li>");
+                          $.data(li, 'id', school.school_id);
+                          $.data(li, 'name', school.name);
+                          $(li).click(function() {
+                            var id = $.data(li, 'id');
+                            $('#school-id').attr('value', id);
+                            var name = $.data(li, 'name');
+                            console.log(name);
+                            $('#school-name').attr('value', name);
+                            $("#dialog").dialog("close");
+                          });
+                          $("#search-list").append(li);
+                        });
+                      }
+                      else {
+                        $("#search-msg").text("search data is not found.")
+                      }
+                    });
+              });
+            });
+        </script>
+    </body>
+</html>
