@@ -9,7 +9,7 @@ import javax.persistence.Id;
 public class School extends Model {
 
     @Id
-    public long id;
+    public long school_id;
 
     public String name;
 }

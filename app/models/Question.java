@@ -13,7 +13,7 @@ import java.util.Date;
 public class Question extends Model {
 
     @Id
-    public Long id;
+    public Long question_id;
 
     public int school_year;
 

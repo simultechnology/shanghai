@@ -12,7 +12,7 @@ import java.util.Date;
 public class Result extends Model {
 
     @Id
-    public Long id;
+    public Long result_id;
 
     public int school_year;
 

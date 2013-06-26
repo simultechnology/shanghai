@@ -69,7 +69,7 @@
                     </span>
                     <span class="span6">
                       <label>日付選択</label>
-                      <input type="text" name="date" id="datepicker">
+                      <input type="text" name="play_date" id="datepicker">
                     </span>
                 </div>
                 @for(cnt <- 1 to 4) {
@@ -100,8 +100,8 @@
                 <div class="row" style="margin-top: 20px;">
                   <span class="span6"></span>
                   <span class="span4">
-                  <a class="btn btn-primary btn-large">キャンセル</a>
-                  <a class="btn btn-primary btn-large">登録</a></span></div>
+                  <input type="reset" class="btn btn-danger btn-large" value="キャンセル">
+                  <input type="submit" class="btn btn-primary btn-large" value="登録"></span></div>
               }
             </div>
 
@@ -161,7 +161,7 @@
                       if (status === 'OK' && data.schools && data.schools.length > 0) {
                         $(data.schools).each(function(idx, school) {
                           var li = $("<li><a>" + school.name + "</a></li>");
-                          $.data(li, 'id', school.id);
+                          $.data(li, 'id', school.school_id);
                           $.data(li, 'name', school.name);
                           $(li).click(function() {
                             var id = $.data(li, 'id');

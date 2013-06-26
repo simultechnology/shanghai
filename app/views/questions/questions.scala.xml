@@ -4,7 +4,7 @@
         <questions_id>777</questions_id>
         @for(question <- questionList) {
             <question>
-                <id>@question.id</id>
+                <id>@question.question_id</id>
                 <school_year>@question.school_year</school_year>
                 <level>@question.level</level>
                 <subject>@question.subject</subject>
