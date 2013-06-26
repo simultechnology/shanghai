@@ -85,8 +85,8 @@
                 <input type="button" value="検索" id="do-search-button">
               </div>
               <div id="search-msg"></div>
-              <table id="search-list-table">
-              </table>
+                <ul class="nav nav-tabs nav-stacked" id="search-list">
+                </ul>
             </div>
 
         </div> <!-- /container -->
@@ -121,6 +121,8 @@
               });
 
               $("#do-search-button").click(function() {
+                $("#search-msg").remove();
+                $("#search-list").children().remove();
                 var name = $("#search-value").val();
                 $.get("/schools/list/" + name,
                   function(data){
@@ -128,7 +130,7 @@
                     var status =data.status;
                     if (status === 'OK' && data.schools && data.schools.length > 0) {
                       $(data.schools).each(function(idx, school) {
-                        console.log(school);
+                        $("#search-list").append("<li><a href='#'>" + school.name + "</a></li>")
                       });
                     }
                     else {

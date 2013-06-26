@@ -7,7 +7,7 @@
         <meta name="viewport" content="width=device-width">
 
         <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui-1.10.3.custom.min.css")" />
+        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.min.css")" />
 
     <style>
       body {
@@ -26,6 +26,10 @@
 
       select {
         width: 100px;
+      }
+
+      input[type=button] {
+        margin-bottom: 10px;
       }
 
 
@@ -55,22 +59,25 @@
 
             <!-- Main hero unit for a primary marketing message or call to action -->
             <div class="hero-unit">
-                <div class="row">
-                    <span class="span3">
+              @helper.form(action = routes.Schools.register, 'method -> "post") {
+                <div class="row" style="margin-bottom: 30px">
+                    <span class="span4">
                       <label>学校名</label>
-                      <input type="text">
+                      <input type="text" name="name" id="school-name">
+                      <input type="button" id="search-button" class="btn" value="検索">
+                      <input type="hidden" name="school_id" id="school-id">
                     </span>
                     <span class="span6">
                       <label>日付選択</label>
-                      <input type="text" id="datepicker">
+                      <input type="text" name="date" id="datepicker">
                     </span>
                 </div>
                 @for(cnt <- 1 to 4) {
                 <div class="row">
-                  <span class="span2"></span>
+                  <span class="span1"></span>
                   <span class="span2">
                   <label>学年</label>
-                  <select>
+                  <select name="school_year_@cnt">
                     @for(i <- 1 to 5) {
                       <option>@i</option>
                     }
@@ -78,11 +85,11 @@
                   </span>
                   <span class="span3">
                     <label>組</label>
-                    <input type="text">
+                    <input type="text" name="group_name_@cnt">
                   </span>
                   <span class="span2">
                     <label>レベル</label>
-                    <select>
+                    <select name="level_@cnt">
                       @for(i <- 1 to 5) {
                         <option>@i</option>
                       }
@@ -95,10 +102,20 @@
                   <span class="span4">
                   <a class="btn btn-primary btn-large">キャンセル</a>
                   <a class="btn btn-primary btn-large">登録</a></span></div>
+              }
             </div>
 
             <footer>
             </footer>
+            <div id="dialog" title="検索画面" style="display: none;">
+              <div>
+                <input type="text" id="search-value">
+                <input type="button" value="検索" id="do-search-button">
+              </div>
+              <div id="search-msg"></div>
+                <ul class="nav nav-tabs nav-stacked" id="search-list">
+                </ul>
+            </div>
 
         </div> <!-- /container -->
 
@@ -124,6 +141,44 @@
               $("#datepicker").datepicker("option", "buttonImage", "@routes.Assets.at("images/datepicker.png")");
 
               $("div#ui-datepicker-div").css("top", "100px");
+
+              $("#search-button").click(function() {
+                console.log($(window).height() * 0.6);
+                $("#dialog").dialog({
+                  width: "75%",
+                  maxHeight: $(window).height() * 0.6
+                });
+              });
+
+              $("#do-search-button").click(function() {
+                $("#search-msg").remove();
+                $("#search-list").children().remove();
+                var name = $("#search-value").val();
+                $.get("/schools/list/" + name,
+                    function(data){
+                      console.log(data);
+                      var status =data.status;
+                      if (status === 'OK' && data.schools && data.schools.length > 0) {
+                        $(data.schools).each(function(idx, school) {
+                          var li = $("<li><a>" + school.name + "</a></li>");
+                          $.data(li, 'id', school.id);
+                          $.data(li, 'name', school.name);
+                          $(li).click(function() {
+                            var id = $.data(li, 'id');
+                            $('#school-id').attr('value', id);
+                            var name = $.data(li, 'name');
+                            console.log(name);
+                            $('#school-name').attr('value', name);
+                            $("#dialog").dialog("close");
+                          });
+                          $("#search-list").append(li);
+                        });
+                      }
+                      else {
+                        $("#search-msg").text("search data is not found.")
+                      }
+                    });
+              });
             });
         </script>
     </body>
