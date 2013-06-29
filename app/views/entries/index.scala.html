@@ -65,6 +65,9 @@
         color: #000;
       }
 
+      input.input_name {
+      }
+
       div.hero-unit {
         padding: 0 60px;
       }
@@ -100,15 +103,29 @@
                   <h3>Room1対象選択</h3>
                   <ul class="nav nav-tabs nav-stacked" id="">
                     @for(entry <- entries) {
-                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.group_name,@entry.level</a></li>
+                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.school_year-@entry.group_name,@entry.level</a></li>
                     }
                   </ul>
+                  @helper.form(action = routes.Entries.add, 'method -> "post") {
+                    <input type="text" name="name" class="span5 name" readonly>
+                    <br>
+                    <input type="text" name="school_year" class="span1 school_year" readonly>
+                    <input type="text" name="group_name" class="span2 group_name" readonly>
+                    <input type="text" name="level" class="span1 level" readonly>
+                    <input type="hidden" name="room_number" value="1">
+                    <input type="hidden" name="school_id" class="school_id">
+                    <input type="hidden" name="entry_id" class="entry_id">
+                    <div style="text-align: center">
+                      <input type="submit" class="btn btn-primary btn-large" value="開始">
+                      <input type="reset" class="btn btn-danger btn-large" value="強制終了">
+                    </div>
+                  }
                 </div>
                 <div class="span5" id="right-container">
                   <h3>Room2対象選択</h3>
                   <ul class="nav nav-tabs nav-stacked" id="">
                     @for(entry <- entries) {
-                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.group_name,@entry.level</a></li>
+                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.school_year-@entry.group_name,@entry.level</a></li>
                     }
                   </ul>
                 </div>
@@ -117,19 +134,8 @@
 
             <footer>
             </footer>
-            <div id="dialog" title="検索画面" style="display: none;">
-              <div>
-                <input type="text" id="search-value">
-                <input type="button" value="検索" id="do-search-button">
-              </div>
-              <div id="search-msg"></div>
-                <ul class="nav nav-tabs nav-stacked" id="search-list">
-                </ul>
-            </div>
-
         </div> <!-- /container -->
 
-        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"><\/script>')</script>
         <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.3.custom.min.js")"></script>
 
@@ -144,52 +150,29 @@
             g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
             s.parentNode.insertBefore(g,s)}(document,'script'));
 
-            $(function() {
-              $("#datepicker").datepicker({dateFormat: 'yy/mm/dd'});
-              $("#datepicker").datepicker("option", "showOn", 'button');
-              $("#datepicker").datepicker("option", "buttonImageOnly", true);
-              $("#datepicker").datepicker("option", "buttonImage", "@routes.Assets.at("images/datepicker.png")");
+          var entries = {
+            @for(entry <- entries) {
+              @entry.entry_id: {
+                school_id: '@entry.school.school_id',
+                name: '@entry.school.name',
+                school_year: @entry.school_year,
+                group_name: '@entry.group_name',
+                level: @entry.level
+              },
+            }
+          };
 
-              $("div#ui-datepicker-div").css("top", "100px");
+          $('#left-container li').click(function() {
+            var entry_id = $(this).attr('value');
+            var entry = entries[entry_id];
+            $('#left-container input.name').val(entry['name']);
+            $('#left-container input.school_year').val(entry['school_year']);
+            $('#left-container input.group_name').val(entry['group_name']);
+            $('#left-container input.level').val(entry['level']);
+            $('#left-container input.school_id').val(entry['school_id']);
+            $('#left-container input.entry_id').val(entry_id);
+          });
 
-              $("#search-button").click(function() {
-                console.log($(window).height() * 0.6);
-                $("#dialog").dialog({
-                  width: "75%",
-                  maxHeight: $(window).height() * 0.6
-                });
-              });
-
-              $("#do-search-button").click(function() {
-                $("#search-msg").remove();
-                $("#search-list").children().remove();
-                var name = $("#search-value").val();
-                $.get("/schools/list/" + name,
-                    function(data){
-                      console.log(data);
-                      var status =data.status;
-                      if (status === 'OK' && data.schools && data.schools.length > 0) {
-                        $(data.schools).each(function(idx, school) {
-                          var li = $("<li><a>" + school.name + "</a></li>");
-                          $.data(li, 'id', school.school_id);
-                          $.data(li, 'name', school.name);
-                          $(li).click(function() {
-                            var id = $.data(li, 'id');
-                            $('#school-id').attr('value', id);
-                            var name = $.data(li, 'name');
-                            console.log(name);
-                            $('#school-name').attr('value', name);
-                            $("#dialog").dialog("close");
-                          });
-                          $("#search-list").append(li);
-                        });
-                      }
-                      else {
-                        $("#search-msg").text("search data is not found.")
-                      }
-                    });
-              });
-            });
         </script>
     </body>
 </html>

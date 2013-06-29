@@ -22,6 +22,7 @@ GET     /schools/list/:name                 controllers.Schools.list(name :Strin
 GET     /schools/list/                      controllers.Schools.all()
 POST    /schools/register                   controllers.Schools.register()
 GET     /entries                            controllers.Entries.index()
+POST    /entries/add                        controllers.Entries.add()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

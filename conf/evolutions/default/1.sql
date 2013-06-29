@@ -65,6 +65,18 @@ create table room (
   constraint pk_room primary key (room_number))
 ;
 
+create table room_queue (
+  entry_id                  bigint not null,
+  school_id                 bigint,
+  school_year               integer,
+  group_name                varchar(255),
+  level                     integer,
+  room_number               integer,
+  create_date               timestamp not null,
+  update_date               timestamp not null,
+  constraint pk_room_queue primary key (entry_id))
+;
+
 create table school (
   school_id                 bigint not null,
   name                      varchar(255),
@@ -83,12 +95,16 @@ create sequence result_seq;
 
 create sequence room_seq;
 
+create sequence room_queue_seq;
+
 create sequence school_seq;
 
 alter table child add constraint fk_child_parent_1 foreign key (parent_id) references parent (id);
 create index ix_child_parent_1 on child (parent_id);
 alter table entry add constraint fk_entry_school_2 foreign key (school_id) references school (school_id);
 create index ix_entry_school_2 on entry (school_id);
+alter table room_queue add constraint fk_room_queue_school_3 foreign key (school_id) references school (school_id);
+create index ix_room_queue_school_3 on room_queue (school_id);
 
 
 
@@ -106,6 +122,8 @@ drop table if exists result cascade;
 
 drop table if exists room cascade;
 
+drop table if exists room_queue cascade;
+
 drop table if exists school cascade;
 
 drop sequence if exists child_seq;
@@ -119,6 +137,8 @@ drop sequence if exists question_seq;
 drop sequence if exists result_seq;
 
 drop sequence if exists room_seq;
+
+drop sequence if exists room_queue_seq;
 
 drop sequence if exists school_seq;
 
