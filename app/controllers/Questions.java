@@ -3,6 +3,7 @@ package controllers;
 import com.avaje.ebean.ExpressionList;
 import models.Question;
 import models.Room;
+import models.RoomQueue;
 import org.apache.commons.csv.CSVUtils;
 import play.data.DynamicForm;
 import play.data.Form;
@@ -128,6 +129,10 @@ public class Questions extends Controller {
         }
         selectedRoom.status = false;
         selectedRoom.save();
+
+        Finder<Long, RoomQueue> roomQueueFinder =
+                new Model.Finder<Long, RoomQueue>(Long.class, RoomQueue.class);
+
 
         Finder<Long, Question> finder = new Model.Finder<Long, Question>(Long.class,
                 Question.class);

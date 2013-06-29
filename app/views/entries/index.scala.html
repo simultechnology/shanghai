@@ -128,6 +128,20 @@
                       <li value="@entry.entry_id"><a>@entry.school.name,@entry.school_year-@entry.group_name,@entry.level</a></li>
                     }
                   </ul>
+                  @helper.form(action = routes.Entries.add, 'method -> "post") {
+                    <input type="text" name="name" class="span5 name" readonly>
+                    <br>
+                    <input type="text" name="school_year" class="span1 school_year" readonly>
+                    <input type="text" name="group_name" class="span2 group_name" readonly>
+                    <input type="text" name="level" class="span1 level" readonly>
+                    <input type="hidden" name="room_number" value="2">
+                    <input type="hidden" name="school_id" class="school_id">
+                    <input type="hidden" name="entry_id" class="entry_id">
+                    <div style="text-align: center">
+                    <input type="submit" class="btn btn-primary btn-large" value="開始">
+                    <input type="reset" class="btn btn-danger btn-large" value="強制終了">
+                    </div>
+                  }
                 </div>
               </div>
             </div>
@@ -145,10 +159,10 @@
         <script src="@routes.Assets.at("javascripts/main.js")"></script>
 
         <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
+          var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
+          (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+          g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
+          s.parentNode.insertBefore(g,s)}(document,'script'));
 
           var entries = {
             @for(entry <- entries) {
@@ -162,16 +176,21 @@
             }
           };
 
-          $('#left-container li').click(function() {
-            var entry_id = $(this).attr('value');
-            var entry = entries[entry_id];
-            $('#left-container input.name').val(entry['name']);
-            $('#left-container input.school_year').val(entry['school_year']);
-            $('#left-container input.group_name').val(entry['group_name']);
-            $('#left-container input.level').val(entry['level']);
-            $('#left-container input.school_id').val(entry['school_id']);
-            $('#left-container input.entry_id').val(entry_id);
-          });
+          setPostValueByClickListener('#right-container');
+          setPostValueByClickListener('#left-container');
+
+          function setPostValueByClickListener(container) {
+            $(container + ' li').click(function() {
+              var entry_id = $(this).attr('value');
+              var entry = entries[entry_id];
+              $(container + ' input.name').val(entry['name']);
+              $(container + ' input.school_year').val(entry['school_year']);
+              $(container + ' input.group_name').val(entry['group_name']);
+              $(container + ' input.level').val(entry['level']);
+              $(container + ' input.school_id').val(entry['school_id']);
+              $(container + ' input.entry_id').val(entry_id);
+            });
+          }
 
         </script>
     </body>

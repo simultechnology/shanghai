@@ -20,7 +20,6 @@ public class Result extends Model {
 
     public String subject;
 
-
     public int answer;
 
     @CreatedTimestamp

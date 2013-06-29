@@ -63,7 +63,7 @@
                 <div class="row" style="margin-bottom: 30px">
                     <span class="span4">
                       <label>学校名</label>
-                      <input type="text" name="name" id="school-name">
+                      <input type="text" name="name" id="school-name" readonly>
                       <input type="button" id="search-button" class="btn" value="検索">
                       <input type="hidden" name="school_id" id="school-id">
                     </span>
@@ -166,7 +166,6 @@
                             var id = $.data(li, 'id');
                             $('#school-id').attr('value', id);
                             var name = $.data(li, 'name');
-                            console.log(name);
                             $('#school-name').attr('value', name);
                             $("#dialog").dialog("close");
                           });
