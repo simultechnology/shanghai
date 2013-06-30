@@ -1,0 +1,50 @@
+@(msg1: String)(msg2: String)(subjects : List[models.Subject])
+@template_upper()
+@helper.form(action = routes.Subjects.master, 'method -> "post") {
+  <div class="row">
+    <span class="span5">
+      <label>科目コード</label>
+      <input type="text" name="subject_code">
+      <span id="errMsg">@msg1</span>
+    </span>
+  </div>
+  <div class="row">
+    <span class="span5">
+      <label>科目名</label>
+      <input type="text" name="subject_name">
+      <span id="errMsg">@msg2</span>
+    </span>
+  </div>
+  <div class="row" style="margin-top: 20px;">
+    <span class="span1"></span>
+    <span class="span4">
+      <input type="reset" class="btn btn-warning btn-large" value="キャンセル">
+      <input type="submit" class="btn btn-primary btn-large" value="登録">
+    </span>
+  </div>
+}
+@if(subjects != null && subjects.size() > 0) {
+  <div>
+    @helper.form(action = routes.Subjects.delete, 'method -> "post") {
+      <table class="table">
+        <tr>
+          <th>科目ID</th>
+          <th>科目名</th>
+          <th>削除</th>
+        </tr>
+        @for((subject, i) <- subjects.zipWithIndex) {
+          <tr>
+            <td>@subject.subject_code</td>
+            <td>@subject.subject_name</td>
+            <td><input type="checkbox" name="subject_codes[@i]" value="@subject.subject_code"></td>
+          </tr>
+        }
+        <tr>
+          <td colspan="2"></td>
+          <td><input type="submit" class="btn btn-danger btn-large" value="削除"></td>
+        </tr>
+      </table>
+    }
+  </div>
+}
+@template_lower()

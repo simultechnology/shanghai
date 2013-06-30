@@ -1,108 +1,17 @@
 @(msg: String)
-<!DOCTYPE html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
-
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.min.css")" />
-
-    <style>
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
-      }
-
-      img.ui-datepicker-trigger {
-        margin-bottom: 10px;
-      }
-
-      div#ui-datepicker-div {
-        position: absolute;
-        top: 100px;
-      }
-
-      select {
-        width: 100px;
-      }
-
-      input[type=button] {
-        margin-bottom: 10px;
-      }
-
-
-        </style>
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap-responsive.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
-
-        <script src="@routes.Assets.at("javascripts/vendor/modernizr-2.6.2-respond-1.1.0.min.js")"></script>
-    </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <a class="brand" href="#">学校マスタ登録</a>
-                    <div class="nav-collapse collapse">
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-
-            <!-- Main hero unit for a primary marketing message or call to action -->
-            <div class="hero-unit">
-              @helper.form(action = routes.Schools.master, 'method -> "post") {
-                <div class="row">
-                    <span class="span5">
-                      <label>学校名</label>
-                      <input type="text" name="name">
-                      <span id="errMsg">@msg</span>
-                    </span>
-                </div>
-                <div class="row" style="margin-top: 20px;">
-                  <span class="span1"></span>
-                  <span class="span4">
-                  <input type="reset" class="btn btn-primary btn-large" value="キャンセル">
-                  <input type="submit" class="btn btn-primary btn-large" value="登録"></span></div>
-              }
-            </div>
-
-            <footer>
-            </footer>
-        </div> <!-- /container -->
-
-        <script>window.jQuery || document.write('<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"><\/script>')</script>
-        <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.3.custom.min.js")"></script>
-
-        <script src="@routes.Assets.at("javascripts/vendor/bootstrap.min.js")"></script>
-
-        <script src="@routes.Assets.at("javascripts/plugins.js")"></script>
-        <script src="@routes.Assets.at("javascripts/main.js")"></script>
-
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-
-            $(function() {
-              $("#datepicker").datepicker({dateFormat: 'yy/mm/dd'});
-              $("#datepicker").datepicker("option", "showOn", 'button');
-              $("#datepicker").datepicker("option", "buttonImageOnly", true);
-              $("#datepicker").datepicker("option", "buttonImage", "@routes.Assets.at("images/datepicker.png")");
-
-              $("div#ui-datepicker-div").css("top", "100px");
-
-            });
-        </script>
-    </body>
-</html>
+@template_upper()
+@helper.form(action = routes.Schools.master, 'method -> "post") {
+  <div class="row">
+      <span class="span5">
+        <label>学校名</label>
+        <input type="text" name="school_name">
+        <span id="errMsg">@msg</span>
+      </span>
+  </div>
+  <div class="row" style="margin-top: 20px;">
+    <span class="span1"></span>
+    <span class="span4">
+    <input type="reset" class="btn btn-warning btn-large" value="キャンセル">
+    <input type="submit" class="btn btn-primary btn-large" value="登録"></span></div>
+}
+@template_lower()

@@ -1,183 +1,126 @@
-<!DOCTYPE html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+@template_upper()
+<style>
+  body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+  }
 
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.min.css")" />
+  img.ui-datepicker-trigger {
+    margin-bottom: 10px;
+  }
 
-    <style>
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
+  div#ui-datepicker-div {
+    position: absolute;
+    top: 100px;
+  }
+
+  select {
+    width: 100px;
+  }
+
+  input[type=button] {
+    margin-bottom: 10px;
+  }
+
+</style>
+@helper.form(action = routes.Schools.register, 'method -> "post") {
+  <div class="row" style="margin-bottom: 30px">
+      <span class="span4">
+        <label>学校名</label>
+        <input type="text" name="school_name" id="school-name" readonly>
+        <input type="button" id="search-button" class="btn" value="検索">
+        <input type="hidden" name="school_id" id="school-id">
+      </span>
+      <span class="span6">
+        <label>日付選択</label>
+        <input type="text" name="play_date" id="datepicker">
+      </span>
+  </div>
+  @for(cnt <- 1 to 4) {
+  <div class="row">
+    <span class="span1"></span>
+    <span class="span2">
+    <label>学年</label>
+    <select name="school_year_@cnt">
+      @for(i <- 1 to 5) {
+        <option>@i</option>
       }
+    </select>
+    </span>
+    <span class="span3">
+      <label>組</label>
+      <input type="text" name="group_name_@cnt">
+    </span>
+    <span class="span2">
+      <label>レベル</label>
+      <select name="level_@cnt">
+        @for(i <- 1 to 5) {
+          <option>@i</option>
+        }
+      </select>
+    </span>
+  </div>
+  }
+  <div class="row" style="margin-top: 20px;">
+    <span class="span6"></span>
+    <span class="span4">
+    <input type="reset" class="btn btn-warning btn-large" value="キャンセル">
+    <input type="submit" class="btn btn-primary btn-large" value="登録"></span></div>
+}
+<div id="dialog" title="検索画面" style="display: none;">
+  <div>
+    <input type="text" id="search-value">
+    <input type="button" value="検索" id="do-search-button">
+  </div>
+  <div id="search-msg"></div>
+  <ul class="nav nav-tabs nav-stacked" id="search-list">
+  </ul>
+</div>
+@template_lower()
+<script>
+  $(function() {
+    $("#datepicker").datepicker({dateFormat: 'yy/mm/dd'});
+    $("#datepicker").datepicker("option", "showOn", 'button');
+    $("#datepicker").datepicker("option", "buttonImageOnly", true);
+    $("#datepicker").datepicker("option", "buttonImage", "@routes.Assets.at("images/datepicker.png")");
 
-      img.ui-datepicker-trigger {
-        margin-bottom: 10px;
-      }
+    $("div#ui-datepicker-div").css("top", "100px");
 
-      div#ui-datepicker-div {
-        position: absolute;
-        top: 100px;
-      }
+    $("#search-button").click(function() {
+      console.log($(window).height() * 0.6);
+      $("#dialog").dialog({
+        width: "75%",
+        maxHeight: $(window).height() * 0.6
+      });
+    });
 
-      select {
-        width: 100px;
-      }
-
-      input[type=button] {
-        margin-bottom: 10px;
-      }
-
-
-        </style>
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap-responsive.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
-
-        <script src="@routes.Assets.at("javascripts/vendor/modernizr-2.6.2-respond-1.1.0.min.js")"></script>
-    </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <a class="brand" href="#">学校登録</a>
-                    <div class="nav-collapse collapse">
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-
-            <!-- Main hero unit for a primary marketing message or call to action -->
-            <div class="hero-unit">
-              @helper.form(action = routes.Schools.register, 'method -> "post") {
-                <div class="row" style="margin-bottom: 30px">
-                    <span class="span4">
-                      <label>学校名</label>
-                      <input type="text" name="name" id="school-name" readonly>
-                      <input type="button" id="search-button" class="btn" value="検索">
-                      <input type="hidden" name="school_id" id="school-id">
-                    </span>
-                    <span class="span6">
-                      <label>日付選択</label>
-                      <input type="text" name="play_date" id="datepicker">
-                    </span>
-                </div>
-                @for(cnt <- 1 to 4) {
-                <div class="row">
-                  <span class="span1"></span>
-                  <span class="span2">
-                  <label>学年</label>
-                  <select name="school_year_@cnt">
-                    @for(i <- 1 to 5) {
-                      <option>@i</option>
-                    }
-                  </select>
-                  </span>
-                  <span class="span3">
-                    <label>組</label>
-                    <input type="text" name="group_name_@cnt">
-                  </span>
-                  <span class="span2">
-                    <label>レベル</label>
-                    <select name="level_@cnt">
-                      @for(i <- 1 to 5) {
-                        <option>@i</option>
-                      }
-                    </select>
-                  </span>
-                </div>
-                }
-                <div class="row" style="margin-top: 20px;">
-                  <span class="span6"></span>
-                  <span class="span4">
-                  <input type="reset" class="btn btn-danger btn-large" value="キャンセル">
-                  <input type="submit" class="btn btn-primary btn-large" value="登録"></span></div>
-              }
-            </div>
-
-            <footer>
-            </footer>
-            <div id="dialog" title="検索画面" style="display: none;">
-              <div>
-                <input type="text" id="search-value">
-                <input type="button" value="検索" id="do-search-button">
-              </div>
-              <div id="search-msg"></div>
-                <ul class="nav nav-tabs nav-stacked" id="search-list">
-                </ul>
-            </div>
-
-        </div> <!-- /container -->
-
-        <script>window.jQuery || document.write('<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"><\/script>')</script>
-        <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.3.custom.min.js")"></script>
-
-        <script src="@routes.Assets.at("javascripts/vendor/bootstrap.min.js")"></script>
-
-        <script src="@routes.Assets.at("javascripts/plugins.js")"></script>
-        <script src="@routes.Assets.at("javascripts/main.js")"></script>
-
-        <script>
-            var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-            (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-            g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-            s.parentNode.insertBefore(g,s)}(document,'script'));
-
-            $(function() {
-              $("#datepicker").datepicker({dateFormat: 'yy/mm/dd'});
-              $("#datepicker").datepicker("option", "showOn", 'button');
-              $("#datepicker").datepicker("option", "buttonImageOnly", true);
-              $("#datepicker").datepicker("option", "buttonImage", "@routes.Assets.at("images/datepicker.png")");
-
-              $("div#ui-datepicker-div").css("top", "100px");
-
-              $("#search-button").click(function() {
-                console.log($(window).height() * 0.6);
-                $("#dialog").dialog({
-                  width: "75%",
-                  maxHeight: $(window).height() * 0.6
+    $("#do-search-button").click(function() {
+      $("#search-msg").remove();
+      $("#search-list").children().remove();
+      var name = $("#search-value").val();
+      $.get("/schools/list/" + name,
+          function(data){
+            console.log(data);
+            var status =data.status;
+            if (status === 'OK' && data.schools && data.schools.length > 0) {
+              $(data.schools).each(function(idx, school) {
+                var li = $("<li><a>" + school.school_name + "</a></li>");
+                $.data(li, 'id', school.school_id);
+                $.data(li, 'name', school.school_name);
+                $(li).click(function() {
+                  var id = $.data(li, 'id');
+                  $('#school-id').attr('value', id);
+                  var name = $.data(li, 'name');
+                  $('#school-name').attr('value', name);
+                  $("#dialog").dialog("close");
                 });
+                $("#search-list").append(li);
               });
-
-              $("#do-search-button").click(function() {
-                $("#search-msg").remove();
-                $("#search-list").children().remove();
-                var name = $("#search-value").val();
-                $.get("/schools/list/" + name,
-                    function(data){
-                      console.log(data);
-                      var status =data.status;
-                      if (status === 'OK' && data.schools && data.schools.length > 0) {
-                        $(data.schools).each(function(idx, school) {
-                          var li = $("<li><a>" + school.name + "</a></li>");
-                          $.data(li, 'id', school.school_id);
-                          $.data(li, 'name', school.name);
-                          $(li).click(function() {
-                            var id = $.data(li, 'id');
-                            $('#school-id').attr('value', id);
-                            var name = $.data(li, 'name');
-                            $('#school-name').attr('value', name);
-                            $("#dialog").dialog("close");
-                          });
-                          $("#search-list").append(li);
-                        });
-                      }
-                      else {
-                        $("#search-msg").text("search data is not found.")
-                      }
-                    });
-              });
-            });
-        </script>
-    </body>
-</html>
+            }
+            else {
+              $("#search-msg").text("search data is not found.")
+            }
+          });
+    });
+  });
+</script>

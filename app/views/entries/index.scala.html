@@ -1,197 +1,126 @@
-@(entries : List[models.Entry])<!DOCTYPE html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title></title>
-        <meta name="description" content="">
-        <meta name="viewport" content="width=device-width">
+@(entries : List[models.Entry])
+@template_upper()
+<style>
 
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/jquery-ui.min.css")" />
+  div#content-container h3 {
+    margin-bottom: 0px;
+    border: 1px solid #666;
+    text-align: center;
+    border-bottom: 0;
+    /* IE10 Consumer Preview */
+    background-image: -ms-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+    /* Mozilla Firefox */
+    background-image: -moz-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+    /* Opera */
+    background-image: -o-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+    /* Webkit (Safari/Chrome 10) */
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #79787A));
+    /* Webkit (Chrome 11+) */
+    background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
+    /* W3C Markup, IE10 Release Preview */
+    background-image: linear-gradient(to bottom, #FFFFFF 0%, #79787A 100%);
+  }
 
-    <style>
-      body {
-        padding-top: 60px;
-        padding-bottom: 40px;
+  div#left-container {
+    padding: 60px 40px 60px 0;
+    margin-right: 0px;
+    margin-left: 40px;
+    border-right: solid 1px #666;
+  }
+
+  div#right-container {
+    padding: 60px 0;
+    margin-left: 40px;
+  }
+
+  div#content-container li {
+    border: 1px solid #666;
+    background-color: #fff;
+  }
+
+  div#content-container a {
+    color: #000;
+  }
+
+  div.hero-unit {
+    padding: 0 60px;
+  }
+
+</style>
+<div class="row" id="content-container">
+  <div class="span5" id="left-container">
+    <h3>Room1対象選択</h3>
+    <ul class="nav nav-tabs nav-stacked" id="">
+      @for(entry <- entries) {
+        <li value="@entry.entry_id"><a>@entry.school.school_name,@entry.school_year-@entry.group_name,@entry.level</a></li>
       }
-      select {
-        width: 100px;
+    </ul>
+    @helper.form(action = routes.Entries.add, 'method -> "post") {
+      <input type="text" name="name" class="span5 name" readonly>
+      <br>
+      <input type="text" name="school_year" class="span1 school_year" readonly>
+      <input type="text" name="group_name" class="span2 group_name" readonly>
+      <input type="text" name="level" class="span1 level" readonly>
+      <input type="hidden" name="room_number" value="1">
+      <input type="hidden" name="school_id" class="school_id">
+      <input type="hidden" name="entry_id" class="entry_id">
+      <div style="text-align: center">
+        <input type="submit" class="btn btn-primary btn-large" value="開始">
+        <input type="reset" class="btn btn-danger btn-large" value="強制終了">
+      </div>
+    }
+  </div>
+  <div class="span5" id="right-container">
+    <h3>Room2対象選択</h3>
+    <ul class="nav nav-tabs nav-stacked" id="">
+      @for(entry <- entries) {
+        <li value="@entry.entry_id"><a>@entry.school.school_name,@entry.school_year-@entry.group_name,@entry.level</a></li>
       }
+    </ul>
+    @helper.form(action = routes.Entries.add, 'method -> "post") {
+      <input type="text" name="name" class="span5 name" readonly>
+      <br>
+      <input type="text" name="school_year" class="span1 school_year" readonly>
+      <input type="text" name="group_name" class="span2 group_name" readonly>
+      <input type="text" name="level" class="span1 level" readonly>
+      <input type="hidden" name="room_number" value="2">
+      <input type="hidden" name="school_id" class="school_id">
+      <input type="hidden" name="entry_id" class="entry_id">
+      <div style="text-align: center">
+      <input type="submit" class="btn btn-primary btn-large" value="開始">
+      <input type="reset" class="btn btn-danger btn-large" value="強制終了">
+      </div>
+    }
+  </div>
+</div>
+@template_lower()
+<script>
+  var entries = {
+  @for(entry <- entries) {
+  @entry.entry_id: {
+      school_id: '@entry.school.school_id',
+          school_name: '@entry.school.school_name',
+          school_year: @entry.school_year,
+          group_name: '@entry.group_name',
+          level: @entry.level
+    },
+  }
+  };
 
-      input[type=button] {
-        margin-bottom: 10px;
-      }
+  setPostValueByClickListener('#right-container');
+  setPostValueByClickListener('#left-container');
 
-      div#content-container {
-      }
+  function setPostValueByClickListener(container) {
+    $(container + ' li').click(function() {
+      var entry_id = $(this).attr('value');
+      var entry = entries[entry_id];
+      $(container + ' input.name').val(entry['school_name']);
+      $(container + ' input.school_year').val(entry['school_year']);
+      $(container + ' input.group_name').val(entry['group_name']);
+      $(container + ' input.level').val(entry['level']);
+      $(container + ' input.school_id').val(entry['school_id']);
+      $(container + ' input.entry_id').val(entry_id);
+    });
+  }
 
-      div#content-container h3 {
-        margin-bottom: 0px;
-        border: 1px solid #666;
-        text-align: center;
-        border-bottom: 0;
-        /* IE10 Consumer Preview */
-        background-image: -ms-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
-        /* Mozilla Firefox */
-        background-image: -moz-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
-        /* Opera */
-        background-image: -o-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
-        /* Webkit (Safari/Chrome 10) */
-        background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #FFFFFF), color-stop(1, #79787A));
-        /* Webkit (Chrome 11+) */
-        background-image: -webkit-linear-gradient(top, #FFFFFF 0%, #79787A 100%);
-        /* W3C Markup, IE10 Release Preview */
-        background-image: linear-gradient(to bottom, #FFFFFF 0%, #79787A 100%);
-      }
-
-      div#left-container {
-        padding: 60px 40px 60px 0;
-        margin-right: 0px;
-        margin-left: 40px;
-        border-right: solid 1px #666;
-      }
-
-      div#right-container {
-        padding: 60px 0;
-        margin-left: 40px;
-      }
-
-      div#content-container li {
-        border: 1px solid #666;
-        background-color: #fff;
-      }
-
-      div#content-container a {
-        color: #000;
-      }
-
-      input.input_name {
-      }
-
-      div.hero-unit {
-        padding: 0 60px;
-      }
-
-        </style>
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/bootstrap-responsive.min.css")">
-        <link rel="stylesheet" href="@routes.Assets.at("stylesheets/main.css")">
-
-        <script src="@routes.Assets.at("javascripts/vendor/modernizr-2.6.2-respond-1.1.0.min.js")"></script>
-    </head>
-    <body>
-        <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
-                    <a class="brand" href="#">開始画面</a>
-                    <div class="nav-collapse collapse">
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
-        </div>
-
-        <div class="container">
-
-            <!-- Main hero unit for a primary marketing message or call to action -->
-            <div class="hero-unit">
-              <div class="row" id="content-container">
-                <div class="span5" id="left-container">
-                  <h3>Room1対象選択</h3>
-                  <ul class="nav nav-tabs nav-stacked" id="">
-                    @for(entry <- entries) {
-                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.school_year-@entry.group_name,@entry.level</a></li>
-                    }
-                  </ul>
-                  @helper.form(action = routes.Entries.add, 'method -> "post") {
-                    <input type="text" name="name" class="span5 name" readonly>
-                    <br>
-                    <input type="text" name="school_year" class="span1 school_year" readonly>
-                    <input type="text" name="group_name" class="span2 group_name" readonly>
-                    <input type="text" name="level" class="span1 level" readonly>
-                    <input type="hidden" name="room_number" value="1">
-                    <input type="hidden" name="school_id" class="school_id">
-                    <input type="hidden" name="entry_id" class="entry_id">
-                    <div style="text-align: center">
-                      <input type="submit" class="btn btn-primary btn-large" value="開始">
-                      <input type="reset" class="btn btn-danger btn-large" value="強制終了">
-                    </div>
-                  }
-                </div>
-                <div class="span5" id="right-container">
-                  <h3>Room2対象選択</h3>
-                  <ul class="nav nav-tabs nav-stacked" id="">
-                    @for(entry <- entries) {
-                      <li value="@entry.entry_id"><a>@entry.school.name,@entry.school_year-@entry.group_name,@entry.level</a></li>
-                    }
-                  </ul>
-                  @helper.form(action = routes.Entries.add, 'method -> "post") {
-                    <input type="text" name="name" class="span5 name" readonly>
-                    <br>
-                    <input type="text" name="school_year" class="span1 school_year" readonly>
-                    <input type="text" name="group_name" class="span2 group_name" readonly>
-                    <input type="text" name="level" class="span1 level" readonly>
-                    <input type="hidden" name="room_number" value="2">
-                    <input type="hidden" name="school_id" class="school_id">
-                    <input type="hidden" name="entry_id" class="entry_id">
-                    <div style="text-align: center">
-                    <input type="submit" class="btn btn-primary btn-large" value="開始">
-                    <input type="reset" class="btn btn-danger btn-large" value="強制終了">
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
-
-            <footer>
-            </footer>
-        </div> <!-- /container -->
-
-        <script>window.jQuery || document.write('<script src="@routes.Assets.at("javascripts/jquery-1.9.0.min.js")"><\/script>')</script>
-        <script src="@routes.Assets.at("javascripts/jquery-ui-1.10.3.custom.min.js")"></script>
-
-        <script src="@routes.Assets.at("javascripts/vendor/bootstrap.min.js")"></script>
-
-        <script src="@routes.Assets.at("javascripts/plugins.js")"></script>
-        <script src="@routes.Assets.at("javascripts/main.js")"></script>
-
-        <script>
-          var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-          (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-          g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-          s.parentNode.insertBefore(g,s)}(document,'script'));
-
-          var entries = {
-            @for(entry <- entries) {
-              @entry.entry_id: {
-                school_id: '@entry.school.school_id',
-                name: '@entry.school.name',
-                school_year: @entry.school_year,
-                group_name: '@entry.group_name',
-                level: @entry.level
-              },
-            }
-          };
-
-          setPostValueByClickListener('#right-container');
-          setPostValueByClickListener('#left-container');
-
-          function setPostValueByClickListener(container) {
-            $(container + ' li').click(function() {
-              var entry_id = $(this).attr('value');
-              var entry = entries[entry_id];
-              $(container + ' input.name').val(entry['name']);
-              $(container + ' input.school_year').val(entry['school_year']);
-              $(container + ' input.group_name').val(entry['group_name']);
-              $(container + ' input.level').val(entry['level']);
-              $(container + ' input.school_id').val(entry['school_id']);
-              $(container + ' input.entry_id').val(entry_id);
-            });
-          }
-
-        </script>
-    </body>
-</html>
+</script>

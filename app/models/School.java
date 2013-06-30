@@ -11,5 +11,5 @@ public class School extends Model {
     @Id
     public long school_id;
 
-    public String name;
+    public String school_name;
 }

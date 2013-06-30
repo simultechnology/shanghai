@@ -25,6 +25,9 @@ GET     /entries                            controllers.Entries.index()
 POST    /entries/add                        controllers.Entries.add()
 GET     /results/test                       controllers.Results.test()
 GET     /results/complete                   controllers.Results.complete()
+GET     /subjects                           controllers.Subjects.index()
+POST    /subjects/master                    controllers.Subjects.master()
+POST    /subjects/delete                    controllers.Subjects.delete()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

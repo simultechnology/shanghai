@@ -7,7 +7,6 @@ import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.node.ObjectNode;
 import play.data.DynamicForm;
 import play.data.Form;
-import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
 import play.libs.Json;
 import play.mvc.Controller;
@@ -64,24 +63,24 @@ public class Schools extends Controller {
             entry.save();
         }
 
-        return ok("OK");
+        return redirect("/entries");
     }
 
     public static Result master() {
-        String[] params = {"name"};
+        String[] params = {"school_name"};
         DynamicForm input = Form.form();
         input = input.bindFromRequest(params);
-        String name = input.data().get("name");
+        String school_name = input.data().get("school_name");
 
-        if (name == null || name.length() == 0) {
+        if (school_name == null || school_name.length() == 0) {
             return ok(entry.render("学校名を入力して下さい。"));
         }
 
         School school = new School();
-        school.name = name;
+        school.school_name = school_name;
         school.save();
 
-        return ok("OK");
+        return redirect("/schools");
     }
 
     public static Result entry() {
@@ -99,7 +98,7 @@ public class Schools extends Controller {
             schools = finder.all();
         }
         else {
-            schools = finder.where().like("name", "%" + name + "%").findList();
+            schools = finder.where().like("school_name", "%" + name + "%").findList();
         }
 
         ObjectNode result = Json.newObject();
