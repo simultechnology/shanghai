@@ -1,9 +1,9 @@
 package controllers;
 
 import com.avaje.ebean.ExpressionList;
+import models.Entry;
 import models.Question;
 import models.Room;
-import models.RoomQueue;
 import org.apache.commons.csv.CSVUtils;
 import play.data.DynamicForm;
 import play.data.Form;
@@ -12,8 +12,6 @@ import play.db.ebean.Model.Finder;
 import play.mvc.Controller;
 import play.mvc.Http.*;
 import play.mvc.Result;
-import views.html.name_result;
-import views.html.type_result;
 import views.html.questions.*;
 import views.xml.questions.*;
 
@@ -130,9 +128,16 @@ public class Questions extends Controller {
         selectedRoom.status = false;
         selectedRoom.save();
 
-        Finder<Long, RoomQueue> roomQueueFinder =
-                new Model.Finder<Long, RoomQueue>(Long.class, RoomQueue.class);
+        Finder<Long, Entry> entryFinder = new Model.Finder<Long, Entry>(Long.class,
+                Entry.class);
+        Entry entry = entryFinder.byId(selectedRoom.entry_id);
 
+        models.Result result = new models.Result();
+        result.school_year = entry.school_year;
+        result.school = entry.school;
+        result.group_name = entry.group_name;
+        result.save();
+        long result_id = result.result_id;
 
         Finder<Long, Question> finder = new Model.Finder<Long, Question>(Long.class,
                 Question.class);
@@ -156,6 +161,6 @@ public class Questions extends Controller {
         ExpressionList<Question> expressionList = finder.where().idIn(randomIdList);
         List<Question> questionList = expressionList.findList();
 
-        return ok(questions.render(questionList));
+        return ok(questions.render(questionList, result_id));
     }
 }

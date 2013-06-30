@@ -5,38 +5,40 @@ import play.data.Form;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import views.html.results.*;
 
 public class Results extends Controller {
 
     public static Result complete() {
-        String[] params = {"school_year", "level", "subject", "content",
-                "choice1", "choice2","choice3","choice4", "answer"};
+        String[] params = {"result_id", "score"};
         DynamicForm input = Form.form();
         input = input.bindFromRequest(params);
         Map<String, String> data = input.data();
-        int school_year = Integer.parseInt(data.get("school_year"));
-        int level = Integer.parseInt(data.get("level"));
-        String subject = data.get("subject");
-        String content = data.get("content");
-        String choice1 = data.get("choice1");
-        String choice2 = data.get("choice2");
-        String choice3 = data.get("choice3");
-        String choice4 = data.get("choice4");
-        int answer = Integer.parseInt(data.get("answer"));
+        long result_id = Long.parseLong(data.get("result_id"));
+        int score = Integer.parseInt(data.get("score"));
+        List list = new ArrayList<Map>();
+        for (int i = 1; i <= 20; i++) {
+            String subject = data.get("answer" + i + "_subject");
+            int status = Integer.parseInt(data.get("answer" + i + "_status"));
+            int time = Integer.parseInt(data.get("answer" + i + "_time"));
+            Map map = new HashMap();
+            map.put("subject", subject);
+            map.put("status", status);
+            map.put("time", time);
+            list.add(map);
+        }
 
-//        Question question = new Question();
-//        question.school_year = school_year;
-//        question.level = level;
-//        question.subject = subject;
-//        question.content = content;
-//        question.choice1 = choice1;
-//        question.choice2 = choice2;
-//        question.choice3 = choice3;
-//        question.choice4 = choice4;
-//        question.answer = answer;
-//        question.save();
+
 
         return ok("OK");
+    }
+
+    public static Result test() {
+
+        return ok(test.render());
     }
 }

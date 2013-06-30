@@ -1,0 +1,22 @@
+@template_upper()
+@helper.form(action = routes.Results.complete, 'method -> "post") {
+    <div>
+      <span class="span2">Result ID</span>
+      <span classs="span8"><input type="name" name="result_id" value="1"></span>
+    </div>
+    <div>
+      <span class="span2">スコア</span>
+      <span classs="span8"><input type="name" name="score" value="78"></span>
+    </div>
+    @for(idx <- 1 to 20) {
+      <div>
+        <span class="span2">answer@idx</span>
+        <span classs="span8">
+          科目 : <input type="name" name="answer@Html(idx.toString())_subject" value="国語">
+          結果 : <input type="name" name="answer@Html(idx.toString())_status" value="1">
+          所用時間 : <input type="name" name="answer@Html(idx.toString())_time" value="3400">
+        </span>
+      </div>
+    }
+}
+@template_lower()

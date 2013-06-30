@@ -16,11 +16,13 @@ public class Rooms extends Controller {
         Room room1 = new Room();
         room1.room_number = 1;
         room1.status = true;
+        room1.entry_id = 99999999;
         room1.save();
 
         Room room2 = new Room();
         room2.room_number = 2;
         room2.status = true;
+        room1.entry_id = 99999998;
         room2.save();
 
         return ok("OK");

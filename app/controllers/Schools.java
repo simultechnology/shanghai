@@ -12,7 +12,7 @@ import play.db.ebean.Model.Finder;
 import play.libs.Json;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.school.*;
+import views.html.schools.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

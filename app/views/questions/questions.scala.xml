@@ -1,7 +1,7 @@
-@(questionList : List[models.Question])<?xml version="1.0" encoding="UTF-8"?>
+@(questionList : List[models.Question])(result_id: Long)<?xml version="1.0" encoding="UTF-8"?>
 <response>
     <questions>
-        <questions_id>777</questions_id>
+        <result_id>@result_id</result_id>
         @for(question <- questionList) {
             <question>
                 <id>@question.question_id</id>
