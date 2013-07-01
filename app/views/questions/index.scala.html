@@ -1,15 +1,4 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>問題登録ページ</title>
-</head>
-<style>
-    input[type=text] {
-        width: 450px;
-    }
-</style>
-<body>
+@template_upper()
 <p>
     ■ 問題登録ページ
 <form action="/questions/insert" method="POST">
@@ -63,9 +52,7 @@
     </div>
 
     <div>
-        <input type="submit" value="登録する"/>
+        <input type="submit" value="登録する" class="btn btn-primary btn-large"/>
     </div>
 </form>
-</p>
-</body>
-</html>
+@template_lower()

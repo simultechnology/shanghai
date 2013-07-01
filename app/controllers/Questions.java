@@ -10,6 +10,7 @@ import play.data.Form;
 import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
 import play.mvc.Controller;
+import play.mvc.Http;
 import play.mvc.Http.*;
 import play.mvc.Result;
 import views.html.questions.*;
@@ -99,9 +100,9 @@ public class Questions extends Controller {
                         question.save();
                     }
                 }
-                return ok("OK");
+                return ok(end.render("ファイルを正常に取り込みました。"));
             } catch (Exception e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                return ok(end.render("ファイルを正常に取り込む異ができませんでした。"));
             } finally {
                 if (br != null) {
                     try {
@@ -110,10 +111,9 @@ public class Questions extends Controller {
                     }
                 }
             }
-            return ok("File upload failed");
         } else {
             flash("error", "Missing file");
-            return redirect(routes.Application.index());
+            return redirect(routes.Questions.file());
         }
     }
 
@@ -139,11 +139,32 @@ public class Questions extends Controller {
         result.save();
         long result_id = result.result_id;
 
-        Finder<Long, Question> finder = new Model.Finder<Long, Question>(Long.class,
+        List<Question> questionList = null;
+        try {
+            questionList = getQuestionList();
+        } catch (Exception e) {
+            return ok(questions_not_available.render());
+        }
+        return ok(questions.render(questionList, result_id));
+    }
+
+    public static Result listSample() {
+
+        List<Question> questionList = null;
+        try {
+            questionList = getQuestionList();
+        } catch (Exception e) {
+            return ok(questions_not_available.render());
+        }
+        return ok(questions.render(questionList, Long.valueOf(99999999)));
+    }
+
+    private static List<Question> getQuestionList() throws Exception {
+        Finder<Long, Question> finder = new Finder<Long, Question>(Long.class,
                 Question.class);
         List<Object> questionIds = finder.findIds();
         if (questionIds.size() == 0) {
-            return ok(questions_not_available.render());
+            throw new Exception();
         }
 
         Set<Long> randomIds = new HashSet<Long>();
@@ -159,8 +180,6 @@ public class Questions extends Controller {
         randomIdList.addAll(randomIds);
 
         ExpressionList<Question> expressionList = finder.where().idIn(randomIdList);
-        List<Question> questionList = expressionList.findList();
-
-        return ok(questions.render(questionList, result_id));
+        return expressionList.findList();
     }
 }

@@ -5,8 +5,6 @@
         @for(question <- questionList) {
             <question>
                 <id>@question.question_id</id>
-                <school_year>@question.school_year</school_year>
-                <level>@question.level</level>
                 <subject>@question.subject</subject>
                 <content>@question.content</content>
                 <choice id="1">@question.choice1</choice>

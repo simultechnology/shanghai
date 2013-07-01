@@ -3,6 +3,8 @@ package controllers;
 import com.avaje.ebean.Query;
 import models.Entry;
 import models.Room;
+import models.RoomQueue;
+import models.School;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.db.ebean.Model;
@@ -52,8 +54,7 @@ public class Entries extends Controller {
             return ok("NG");
         }
         room.entry_id = entry_id;
-        room.save();
 
-        return ok("OK");
+        return redirect(routes.Entries.index());
     }
 }
