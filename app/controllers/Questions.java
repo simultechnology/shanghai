@@ -10,7 +10,6 @@ import play.data.Form;
 import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
 import play.mvc.Controller;
-import play.mvc.Http;
 import play.mvc.Http.*;
 import play.mvc.Result;
 import views.html.questions.*;
@@ -21,9 +20,33 @@ import java.util.*;
 
 public class Questions extends Controller {
 
+    private static HashMap<Integer, HashMap<Long, List<Question>>> cachedQuestionList = new HashMap();
+
     public static Result index() {
 
         return ok(index.render());
+    }
+
+    public static int getRoomNumberByResultId(long result_id) {
+        Set<Integer> room_numbers = cachedQuestionList.keySet();
+        for (Integer room_number :room_numbers) {
+            HashMap<Long, List<Question>> questionsMap = cachedQuestionList.get(room_number);
+            List<Question> questionList = questionsMap.get(result_id);
+            if (questionList != null) {
+                return room_number;
+            }
+        }
+        return -1;
+    }
+
+    public static void deleteCacheByRoomNumber(int room_number) {
+        HashMap<Long, List<Question>> questionsMap = cachedQuestionList.get(room_number);
+        Set<Long> keys = questionsMap.keySet();
+        for (Long key : keys) {
+            List<Question> questions = questionsMap.get(key);
+            questions.clear();
+            questions = null;
+        }
     }
 
     public static Result insert() {
@@ -119,14 +142,26 @@ public class Questions extends Controller {
 
     public static Result list(int room_number) {
 
+        HashMap<Long, List<Question>> cachedMap = cachedQuestionList.get(room_number);
+        if (cachedMap != null) {
+            Set<Long> key = cachedMap.keySet();
+            for (long id : key) {
+                List<Question> list = cachedMap.get(id);
+                if (list == null || list.size() == 0) {
+                    break;
+                }
+                return ok(questions.render(list, id));
+            }
+        }
+
         Finder<Long, Room> roomFinder = new Model.Finder<Long, Room>(Long.class,
                 Room.class);
         Room selectedRoom = roomFinder.byId(Long.valueOf(room_number));
-        if (!selectedRoom.status) {
-            return ok(questions_not_available.render());
-        }
-        selectedRoom.status = false;
-        selectedRoom.save();
+//        if (!selectedRoom.status) {
+//            return ok(questions_not_available.render());
+//        }
+//        selectedRoom.status = false;
+//        selectedRoom.save();
 
         Finder<Long, Entry> entryFinder = new Model.Finder<Long, Entry>(Long.class,
                 Entry.class);
@@ -137,7 +172,7 @@ public class Questions extends Controller {
         result.school = entry.school;
         result.group_name = entry.group_name;
         result.save();
-        long result_id = result.result_id;
+        Long result_id = result.result_id;
 
         List<Question> questionList = null;
         try {
@@ -145,6 +180,11 @@ public class Questions extends Controller {
         } catch (Exception e) {
             return ok(questions_not_available.render());
         }
+
+        HashMap<Long, List<Question>> map = new HashMap<>();
+        map.put(result_id, questionList);
+        cachedQuestionList.put(room_number, map);
+
         return ok(questions.render(questionList, result_id));
     }
 

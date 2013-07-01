@@ -123,4 +123,36 @@
     });
   }
 
+  function checkStatusTimer() {
+
+  $.ajax({
+    url:'@routes.Rooms.check',
+    type:'get',
+    dataType:'xml',
+    success:function(xml) {
+      var rooms = $(xml).find('room');
+      var submitButtons = $('#content-container input[type=submit]');
+      var resets = $('#content-container input[type=reset]');
+      $(rooms).each(function(idx, room) {
+        console.log(submitButtons);
+        var room_number = Number($(room).find('room_number').text()) - 1;
+        var status = $(room).find('status').text();
+        if (status === 'OK') {
+          $(submitButtons[room_number]).attr('disabled', false);
+          $(resets[room_number]).attr('disabled', true);
+
+        }
+        else {
+          $(submitButtons[room_number]).attr('disabled', true);
+          $(resets[room_number]).attr('disabled', false);
+        }
+      });
+    }
+  });
+  }
+
+  checkStatusTimer();
+  setInterval(checkStatusTimer, 100);
+
+
 </script>

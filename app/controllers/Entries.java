@@ -1,16 +1,14 @@
 package controllers;
 
-import com.avaje.ebean.Query;
 import models.Entry;
 import models.Room;
-import models.RoomQueue;
-import models.School;
 import play.data.DynamicForm;
 import play.data.Form;
-import play.db.ebean.Model;
+import play.db.ebean.Model.Finder;
 import play.mvc.Result;
 import play.mvc.Controller;
 import views.html.entries.*;
+import views.html.questions.end;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,7 +18,7 @@ public class Entries extends Controller {
 
     public static Result index() {
 
-        Model.Finder<Long, Entry> finder = new Model.Finder<Long, Entry>(Long.class,
+        Finder<Long, Entry> finder = new Finder<Long, Entry>(Long.class,
                 Entry.class);
 
         Calendar c = new GregorianCalendar();
@@ -47,13 +45,20 @@ public class Entries extends Controller {
         long room_number = Long.parseLong(data.get("room_number"));
         long entry_id = Long.parseLong(data.get("entry_id"));
 
-        Model.Finder<Long, Room> finder = new Model.Finder<Long, Room>(Long.class,
+        Finder<Long, Room> finder = new Finder<Long, Room>(Long.class,
                 Room.class);
         Room room = finder.byId(room_number);
         if (!room.status) {
-            return ok("NG");
+            return ok(end.render("現在、room" + room_number + "は使用中のためエントリー追加できません。"));
         }
+        room.status = false;
         room.entry_id = entry_id;
+        room.save();
+
+        Finder<Long, Entry> entryFinder = new Finder<Long, Entry>(Long.class,
+                Entry.class);
+        Entry entry = entryFinder.byId(entry_id);
+        entry.delete();
 
         return redirect(routes.Entries.index());
     }

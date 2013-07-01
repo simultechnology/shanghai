@@ -86,6 +86,19 @@ create table school (
   constraint pk_school primary key (school_id))
 ;
 
+create table score (
+  result_id                 bigint,
+  subject_code              varchar(255),
+  correct_number            integer,
+  mistake_number            integer,
+  time_over_number          integer,
+  total_number              integer,
+  time                      bigint,
+  create_date               timestamp not null,
+  update_date               timestamp not null,
+  constraint pk_score primary key (result_id, subject_code))
+;
+
 create table subject (
   subject_code              varchar(255) not null,
   subject_name              varchar(255),
@@ -107,6 +120,8 @@ create sequence room_seq;
 create sequence room_queue_seq;
 
 create sequence school_seq;
+
+create sequence score_seq;
 
 create sequence subject_seq;
 
@@ -139,6 +154,8 @@ drop table if exists room_queue cascade;
 
 drop table if exists school cascade;
 
+drop table if exists score cascade;
+
 drop table if exists subject cascade;
 
 drop sequence if exists child_seq;
@@ -156,6 +173,8 @@ drop sequence if exists room_seq;
 drop sequence if exists room_queue_seq;
 
 drop sequence if exists school_seq;
+
+drop sequence if exists score_seq;
 
 drop sequence if exists subject_seq;
 

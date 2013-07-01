@@ -1,7 +1,9 @@
 package controllers;
 
+import models.Room;
 import play.data.DynamicForm;
 import play.data.Form;
+import play.db.ebean.Model.Finder;
 import play.mvc.Controller;
 import play.mvc.Result;
 
@@ -10,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import views.html.results.*;
+import views.xml.results.*;
 
 public class Results extends Controller {
 
@@ -32,9 +35,23 @@ public class Results extends Controller {
             list.add(map);
         }
 
+        Finder<Long, models.Result> finder =
+                new Finder<Long, models.Result>(Long.class, models.Result.class);
+        models.Result result = finder.byId(result_id);
 
 
-        return ok("OK");
+        int room_number = Questions.getRoomNumberByResultId(result_id);
+
+        Finder<Long, Room> roomFinder =
+                new Finder<Long, Room>(Long.class, Room.class);
+        Room room = roomFinder.byId(Long.valueOf(room_number));
+        room.status = true;
+        room.save();
+
+        // キャッシュしている問題リストの削除
+        Questions.deleteCacheByRoomNumber(room_number);
+
+        return ok(results.render(true));
     }
 
     public static Result test() {
