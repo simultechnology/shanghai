@@ -22,7 +22,7 @@ public class Result extends Model {
 
     public String group_name;
 
-    public int answer;
+    public int score;
 
     @CreatedTimestamp
     public Date createDate;

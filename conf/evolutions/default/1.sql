@@ -55,7 +55,7 @@ create table result (
   school_year               integer,
   level                     integer,
   group_name                varchar(255),
-  answer                    integer,
+  score                     integer,
   create_date               timestamp not null,
   update_date               timestamp not null,
   constraint pk_result primary key (result_id))

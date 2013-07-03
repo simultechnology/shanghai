@@ -167,6 +167,10 @@ public class Questions extends Controller {
                 Entry.class);
         Entry entry = entryFinder.byId(selectedRoom.entry_id);
 
+        if (entry == null) {
+            return ok(questions_not_available.render());
+        }
+
         models.Result result = new models.Result();
         result.school_year = entry.school_year;
         result.school = entry.school;
