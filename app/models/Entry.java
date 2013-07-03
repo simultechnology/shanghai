@@ -24,6 +24,9 @@ public class Entry extends Model {
 
     public int level;
 
+    @Column(columnDefinition="BOOLEAN default false")
+    public boolean selected;
+
     @CreatedTimestamp
     public Date createDate;
 

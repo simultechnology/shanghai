@@ -19,6 +19,7 @@ create table entry (
   school_year               integer,
   group_name                varchar(255),
   level                     integer,
+  selected                  BOOLEAN default false,
   create_date               timestamp not null,
   update_date               timestamp not null,
   constraint pk_entry primary key (entry_id))

@@ -32,7 +32,7 @@ public class Entries extends Controller {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         }
 
-        List<Entry> entries = finder.where().eq("play_date", today).findList();
+        List<Entry> entries = finder.where().eq("play_date", today).eq("selected", false).findList();
 
         return ok(index.render(entries));
     }
@@ -58,7 +58,8 @@ public class Entries extends Controller {
         Finder<Long, Entry> entryFinder = new Finder<Long, Entry>(Long.class,
                 Entry.class);
         Entry entry = entryFinder.byId(entry_id);
-        entry.delete();
+        entry.selected = true;
+        entry.save();
 
         return redirect(routes.Entries.index());
     }

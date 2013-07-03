@@ -3,7 +3,7 @@
 # ~~~~
 
 # Home page
-GET     /                                   controllers.Welcome.index()
+GET     /                                   controllers.Entries.index()
 GET     /sample                             controllers.Application.index()
 GET     /top                                controllers.Uranai.showTop()
 POST    /name                               controllers.Uranai.showNameResult()
