@@ -80,6 +80,7 @@
 <script>
   $(function() {
     $("#datepicker").datepicker({dateFormat: 'yy/mm/dd'});
+    $("#datepicker").datepicker( "setDate", new Date());
     $("#datepicker").datepicker("option", "showOn", 'button');
     $("#datepicker").datepicker("option", "buttonImageOnly", true);
     $("#datepicker").datepicker("option", "buttonImage", "@routes.Assets.at("images/datepicker.png")");

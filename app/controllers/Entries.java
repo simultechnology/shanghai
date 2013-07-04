@@ -63,4 +63,22 @@ public class Entries extends Controller {
 
         return redirect(routes.Entries.index());
     }
+
+
+    public static Result stop(int room_number) {
+
+        Finder<Long, Room> finder = new Finder<Long, Room>(Long.class,
+                Room.class);
+        Room room = finder.byId(Long.valueOf(room_number));
+        room.status = true;
+        room.save();
+
+        Finder<Long, Entry> entryFinder = new Finder<Long, Entry>(Long.class,
+                Entry.class);
+        Entry entry = entryFinder.byId(room.entry_id);
+        entry.selected = true;
+        entry.save();
+
+        return redirect(routes.Entries.index());
+    }
 }

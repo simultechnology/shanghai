@@ -134,7 +134,6 @@
       var submitButtons = $('#content-container input[type=submit]');
       var resets = $('#content-container input[type=reset]');
       $(rooms).each(function(idx, room) {
-        console.log(submitButtons);
         var room_number = Number($(room).find('room_number').text()) - 1;
         var status = $(room).find('status').text();
         if (status === 'OK') {
@@ -153,6 +152,13 @@
 
   checkStatusTimer();
   setInterval(checkStatusTimer, 100);
+
+  $('#content-container input[type=reset]').each(function(idx, btn) {
+    $(btn).click(function() {
+      var room_number = idx + 1;
+      location.href = '/entries/stop/' + room_number;
+    });
+  });
 
 
 </script>
