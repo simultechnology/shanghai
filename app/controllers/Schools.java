@@ -15,6 +15,7 @@ import views.html.schools.*;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -73,19 +74,25 @@ public class Schools extends Controller {
         String school_name = input.data().get("school_name");
 
         if (school_name == null || school_name.length() == 0) {
-            return ok(entry.render("学校名を入力して下さい。"));
+            return ok(entry.render("学校名を入力して下さい。", null));
         }
 
         School school = new School();
         school.school_name = school_name;
         school.save();
 
-        return redirect("/schools");
+        return redirect(routes.Schools.entry());
     }
 
     public static Result entry() {
 
-        return ok(entry.render(""));
+        Finder<Long, School> finder =
+                new Finder<Long, School>(Long.class, School.class);
+        List<School> schools = finder.where()
+                                     .orderBy("createDate DESC")
+                                     .findList();
+
+        return ok(entry.render("", schools));
     }
 
     public static Result list(String name) {
@@ -118,7 +125,9 @@ public class Schools extends Controller {
         Finder<Long, School> finder = new Finder<Long, School>(Long.class,
                 School.class);
 
-        List<School> schools = finder.all();
+        List<School> schools = finder.where()
+                                     .orderBy("createDate DESC")
+                                     .findList();
         ObjectNode result = Json.newObject();
         if(schools == null) {
             result.put("status", "NG");
@@ -129,5 +138,23 @@ public class Schools extends Controller {
             result.put("schools", node);
             return ok(result);
         }
+    }
+
+    public static Result delete() {
+        String[] params = {"subject_codes"};
+        DynamicForm input = Form.form();
+        input = input.bindFromRequest(params);
+        Map<String,String> data = input.data();
+
+        Collection<String> values = data.values();
+        if (values.size() > 0) {
+            Finder<String, School> finder =
+                    new Finder<String, School>(String.class, School.class);
+            for (String school_id : values) {
+                School school = finder.byId(school_id);
+                school.delete();
+            }
+        }
+        return redirect(routes.Schools.entry());
     }
 }

@@ -20,7 +20,9 @@ public class Subjects extends Controller {
 
         Finder<Long, Subject> finder =
                 new Model.Finder<Long, Subject>(Long.class, Subject.class);
-        List<Subject> subjects = finder.all();
+        List<Subject> subjects = finder.where()
+                                       .orderBy("createDate DESC")
+                                       .findList();
 
         return ok(index.render("", "", subjects));
     }

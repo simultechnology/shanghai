@@ -84,6 +84,8 @@ create table room_queue (
 create table school (
   school_id                 bigint not null,
   school_name               varchar(255),
+  create_date               timestamp not null,
+  update_date               timestamp not null,
   constraint pk_school primary key (school_id))
 ;
 
@@ -103,6 +105,8 @@ create table score (
 create table subject (
   subject_code              varchar(255) not null,
   subject_name              varchar(255),
+  create_date               timestamp not null,
+  update_date               timestamp not null,
   constraint pk_subject primary key (subject_code))
 ;
 

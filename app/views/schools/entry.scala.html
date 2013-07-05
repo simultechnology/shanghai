@@ -1,4 +1,4 @@
-@(msg: String)
+@(msg: String)(schools : List[models.School])
 @template_upper()
 @helper.form(action = routes.Schools.master, 'method -> "post") {
   <div class="row">
@@ -13,5 +13,27 @@
     <span class="span4">
     <input type="reset" class="btn btn-warning btn-large" value="キャンセル">
     <input type="submit" class="btn btn-primary btn-large" value="登録"></span></div>
+}
+@if(schools != null && schools.size() > 0) {
+<div>
+  @helper.form(action = routes.Schools.delete, 'method -> "post") {
+  <table class="table">
+    <tr>
+      <th>学校名</th>
+      <th>削除</th>
+    </tr>
+    @for((school, i) <- schools.zipWithIndex) {
+    <tr>
+      <td>@school.school_name</td>
+      <td><input type="checkbox" name="school_ids[@i]" value="@school.school_id"></td>
+    </tr>
+    }
+    <tr>
+      <td></td>
+      <td><input type="submit" class="btn btn-danger btn-large" value="削除"></td>
+    </tr>
+  </table>
+  }
+</div>
 }
 @template_lower()
