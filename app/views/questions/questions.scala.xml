@@ -5,7 +5,7 @@
         @for(question <- questionList) {
             <question>
                 <id>@question.question_id</id>
-                <subject>@question.subject</subject>
+                <subject>@question.subject.subject_name</subject>
                 <content>@question.content</content>
                 <choice id="1">@question.choice1</choice>
                 <choice id="2">@question.choice2</choice>

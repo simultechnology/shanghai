@@ -4,6 +4,7 @@ import com.avaje.ebean.ExpressionList;
 import models.Entry;
 import models.Question;
 import models.Room;
+import models.Subject;
 import org.apache.commons.csv.CSVUtils;
 import play.data.DynamicForm;
 import play.data.Form;
@@ -50,14 +51,19 @@ public class Questions extends Controller {
     }
 
     public static Result insert() {
-        String[] params = {"school_year", "level", "subject", "content",
+        String[] params = {"school_year", "level", "subject_code", "content",
                            "choice1", "choice2","choice3","choice4", "answer"};
         DynamicForm input = Form.form();
         input = input.bindFromRequest(params);
         Map<String, String> data = input.data();
         int school_year = Integer.parseInt(data.get("school_year"));
         int level = Integer.parseInt(data.get("level"));
-        String subject = data.get("subject");
+        String subject_code = data.get("subject_code");
+
+        Finder<String, Subject> finder =
+                new Finder<String, Subject>(String.class, Subject.class);
+        Subject subject = finder.byId(subject_code);
+
         String content = data.get("content");
         String choice1 = data.get("choice1");
         String choice2 = data.get("choice2");
@@ -113,7 +119,13 @@ public class Questions extends Controller {
                         Question question = new Question();
                         question.school_year = Integer.parseInt(val[1]);
                         question.level = Integer.parseInt(val[2]);
-                        question.subject = val[3];
+                        String subject_code = val[3];
+
+                        Finder<String, Subject> finder =
+                                new Finder<String, Subject>(String.class, Subject.class);
+                        Subject subject = finder.byId(subject_code);
+
+                        question.subject = subject;
                         question.content = val[4];
                         question.choice1 = val[5];
                         question.choice2 = val[6];

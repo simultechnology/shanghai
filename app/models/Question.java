@@ -3,10 +3,7 @@ package models;
 import play.db.ebean.Model;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Version;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -19,7 +16,9 @@ public class Question extends Model {
 
     public int level;
 
-    public String subject;
+    @ManyToOne
+    @JoinColumn(name="subject_code")
+    public Subject subject;
 
     @Column(columnDefinition = "TEXT")
     public String content;

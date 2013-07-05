@@ -37,7 +37,7 @@ create table question (
   question_id               bigint not null,
   school_year               integer,
   level                     integer,
-  subject                   varchar(255),
+  subject_code              varchar(255),
   content                   TEXT,
   choice1                   TEXT,
   choice2                   TEXT,
@@ -134,10 +134,12 @@ alter table child add constraint fk_child_parent_1 foreign key (parent_id) refer
 create index ix_child_parent_1 on child (parent_id);
 alter table entry add constraint fk_entry_school_2 foreign key (school_id) references school (school_id);
 create index ix_entry_school_2 on entry (school_id);
-alter table result add constraint fk_result_school_3 foreign key (school_id) references school (school_id);
-create index ix_result_school_3 on result (school_id);
-alter table room_queue add constraint fk_room_queue_school_4 foreign key (school_id) references school (school_id);
-create index ix_room_queue_school_4 on room_queue (school_id);
+alter table question add constraint fk_question_subject_3 foreign key (subject_code) references subject (subject_code);
+create index ix_question_subject_3 on question (subject_code);
+alter table result add constraint fk_result_school_4 foreign key (school_id) references school (school_id);
+create index ix_result_school_4 on result (school_id);
+alter table room_queue add constraint fk_room_queue_school_5 foreign key (school_id) references school (school_id);
+create index ix_room_queue_school_5 on room_queue (school_id);
 
 
 
