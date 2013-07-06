@@ -12,6 +12,7 @@
                 <choice id="3">@question.choice3</choice>
                 <choice id="4">@question.choice4</choice>
                 <answer>@question.answer</answer>
+                <answer_type>@question.answer_type</answer_type>
             </question>
         }
     </questions>

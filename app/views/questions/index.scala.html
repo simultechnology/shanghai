@@ -2,57 +2,89 @@
 <p>
     ■ 問題登録ページ
 <form action="/questions/insert" method="POST">
-    <div>
-        school_year :
+    <div class="row span7">
+      <span class="span2">school_year</span>
+      <span class="span3">
         <select name="school_year">
             @for(i <- 1 to 6) {
                 <option>@i</option>
             }
         </select>
+      </span>
     </div>
-    <div>
-        level :
+    <div class="row span7">
+      <span class="span2">level</span>
+      <span class="span3">
         <select name="level">
             @for(i <- 1 to 5) {
             <option>@i</option>
             }
         </select>
+      </span>
     </div>
-    <div>
-        subject :
-        <input type="text"  name="subject"/>
+    <div class="row span7">
+      <span class="span2">subject_code</span>
+      <span class="span3">
+        <input type="text"  name="subject_code"/>
+      </span>
     </div>
-    <div>
-        content :
+    <div class="row span7">
+      <span class="span2">content</span>
+      <span class="span3">
         <input type="text"  name="content"/>
+      </span>
     </div>
-    <div>
-        choice1 :
+    <div class="row span7">
+      <span class="span2">choice1</span>
+      <span class="span3">
         <input type="text"  name="choice1"/>
+      </span>
     </div>
     <div>
-        choice2 :
+      <div class="row span7">
+      <span class="span2">choice2</span>
+      <span class="span3">
         <input type="text"  name="choice2"/>
+      </span>
     </div>
     <div>
-        choice3 :
+      <div class="row span7">
+      <span class="span2">choice3</span>
+      <span class="span3">
         <input type="text"  name="choice3"/>
+      </span>
     </div>
-    <div>
-        choice4 :
+    <div class="row span7">
+      <span class="span2">choice4</span>
+      <span class="span3">
         <input type="text"  name="choice4"/>
+      </span>
     </div>
-    <div>
-        answer :
+    <div class="row span7">
+      <span class="span2">answer</span>
+      <span class="span3">
         <select name="answer">
             @for(i <- 1 to 4) {
             <option>@i</option>
             }
         </select>
+      </span>
     </div>
-
-    <div>
+    <div class="row span7">
+      <span class="span2">answer_type</span>
+    <span class="span3">
+      <select name="answer_type">
+        @for(i <- 1 to 2) {
+        <option>@i</option>
+        }
+      </select>
+    </span>
+    </div>
+    <div class="row span7">
+      <span class="span2"></span>
+      <span class="span3">
         <input type="submit" value="登録する" class="btn btn-primary btn-large"/>
+      </span>
     </div>
 </form>
 @template_lower()

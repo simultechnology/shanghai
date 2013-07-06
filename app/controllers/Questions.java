@@ -52,7 +52,7 @@ public class Questions extends Controller {
 
     public static Result insert() {
         String[] params = {"school_year", "level", "subject_code", "content",
-                           "choice1", "choice2","choice3","choice4", "answer"};
+                           "choice1", "choice2","choice3","choice4", "answer", "answer_type"};
         DynamicForm input = Form.form();
         input = input.bindFromRequest(params);
         Map<String, String> data = input.data();
@@ -70,6 +70,7 @@ public class Questions extends Controller {
         String choice3 = data.get("choice3");
         String choice4 = data.get("choice4");
         int answer = Integer.parseInt(data.get("answer"));
+        int answer_type = Integer.parseInt(data.get("answer_type"));
 
         Question question = new Question();
         question.school_year = school_year;
@@ -81,9 +82,10 @@ public class Questions extends Controller {
         question.choice3 = choice3;
         question.choice4 = choice4;
         question.answer = answer;
+        question.answer_type = answer_type;
         question.save();
 
-        return ok("OK");
+        return redirect(routes.Questions.index());
     }
 
     public static Result file() {
@@ -132,6 +134,7 @@ public class Questions extends Controller {
                         question.choice3 = val[7];
                         question.choice4 = val[8];
                         question.answer = Integer.parseInt(val[9]);
+                        question.answer_type = Integer.parseInt(val[10]);
                         question.save();
                     }
                 }

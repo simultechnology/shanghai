@@ -44,6 +44,7 @@ create table question (
   choice3                   TEXT,
   choice4                   TEXT,
   answer                    integer,
+  answer_type               integer,
   create_date               timestamp not null,
   update_date               timestamp not null,
   constraint pk_question primary key (question_id))

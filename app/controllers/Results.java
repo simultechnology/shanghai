@@ -32,7 +32,7 @@ public class Results extends Controller {
 
         Map<String, Map> subjectCodeMap = new HashMap<String, Map>();
         for (int i = 1; i <= 20; i++) {
-            String subject_code = data.get("answer" + i + "_subject");
+            String subject_code = data.get("answer" + i + "_subject_code");
             int status = Integer.parseInt(data.get("answer" + i + "_status"));
             int time = Integer.parseInt(data.get("answer" + i + "_time"));
             Map<String, Integer> map = subjectCodeMap.get(subject_code);

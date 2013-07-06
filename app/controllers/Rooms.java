@@ -25,7 +25,7 @@ public class Rooms extends Controller {
         room1.entry_id = 99999998;
         room2.save();
 
-        return ok("OK");
+        return redirect(routes.Rooms.check());
     }
 
     public static Result check() {
@@ -34,6 +34,10 @@ public class Rooms extends Controller {
                     Room.class);
         List<Room> rooms = finder.all();
 
+        // 未初期化の場合はsetupメソッドを実行する。
+        if (rooms == null || rooms.size() == 0) {
+            return redirect(routes.Rooms.setup());
+        }
         return ok(check.render(rooms));
     }
 

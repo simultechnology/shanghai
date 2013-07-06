@@ -37,6 +37,8 @@ public class Question extends Model {
 
     public int answer;
 
+    public int answer_type;
+
     @CreatedTimestamp
     public Date createDate;
 

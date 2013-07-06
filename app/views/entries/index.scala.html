@@ -2,6 +2,18 @@
 @template_upper()
 <style>
 
+  div#content-container {
+    margin-left: 0px;
+  }
+
+  div#content-container table {
+    margin: auto;
+  }
+
+  div#content-container table td {
+    padding: 0px 30px;
+  }
+
   div#content-container h3 {
     margin-bottom: 0px;
     border: 1px solid #666;
@@ -22,15 +34,13 @@
   }
 
   div#left-container {
-    padding: 60px 40px 60px 0;
-    margin-right: 0px;
-    margin-left: 40px;
-    border-right: solid 1px #666;
+    padding: 60px 0;
+    margin: auto;
   }
 
   div#right-container {
     padding: 60px 0;
-    margin-left: 40px;
+    margin: auto;
   }
 
   div#content-container li {
@@ -48,7 +58,10 @@
 
 </style>
 <div class="row" id="content-container">
-  <div class="span5" id="left-container">
+  <table>
+    <tr>
+      <td style="border-right: 1px solid #666">
+        <div class="span5" id="left-container">
     <h3>Room1対象選択</h3>
     <ul class="nav nav-tabs nav-stacked" id="">
       @for(entry <- entries) {
@@ -70,7 +83,9 @@
       </div>
     }
   </div>
-  <div class="span5" id="right-container">
+      </td>
+      <td>
+        <div class="span5" id="right-container">
     <h3>Room2対象選択</h3>
     <ul class="nav nav-tabs nav-stacked" id="">
       @for(entry <- entries) {
@@ -92,6 +107,9 @@
       </div>
     }
   </div>
+      </td>
+    </tr>
+  </table>
 </div>
 @template_lower()
 <script>
