@@ -64,7 +64,7 @@ public class Schools extends Controller {
             entry.save();
         }
 
-        return redirect("/entries");
+        return redirect(routes.Entries.index());
     }
 
     public static Result master() {

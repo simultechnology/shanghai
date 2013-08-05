@@ -113,6 +113,7 @@
 </div>
 @template_lower()
 <script>
+
   var entries = {
   @for(entry <- entries) {
   @entry.entry_id: {
@@ -125,8 +126,6 @@
   }
   };
 
-  setPostValueByClickListener('#right-container');
-  setPostValueByClickListener('#left-container');
 
   function setPostValueByClickListener(container) {
     $(container + ' li').click(function() {
@@ -164,17 +163,27 @@
           $(resets[room_number]).attr('disabled', false);
         }
       });
+    },
+   error:function(XMLHttpRequest, textStatus, errorThrown){
+     //location.href = '/';
     }
   });
   }
 
-  checkStatusTimer();
-  setInterval(checkStatusTimer, 100);
+  $(document).ready(function() {
+    setPostValueByClickListener('#right-container');
+    setPostValueByClickListener('#left-container');
 
-  $('#content-container input[type=reset]').each(function(idx, btn) {
-    $(btn).click(function() {
-      var room_number = idx + 1;
-      location.href = '/entries/stop/' + room_number;
+    checkStatusTimer();
+    setTimeout(function() {
+      setInterval(checkStatusTimer, 1000);
+    }, 1000);
+
+    $('#content-container input[type=reset]').each(function(idx, btn) {
+      $(btn).click(function() {
+        var room_number = idx + 1;
+        location.href = '/entries/stop/' + room_number;
+      });
     });
   });
 
