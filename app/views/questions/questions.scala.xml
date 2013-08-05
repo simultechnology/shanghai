@@ -6,6 +6,7 @@
             <question>
                 <id>@question.question_id</id>
                 <subject>@question.subject.subject_name</subject>
+                <subject_code>@question.subject.subject_code</subject_code>
                 <content>@question.content</content>
                 <choice id="1">@question.choice1</choice>
                 <choice id="2">@question.choice2</choice>
