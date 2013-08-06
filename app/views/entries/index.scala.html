@@ -166,6 +166,7 @@
     },
    error:function(XMLHttpRequest, textStatus, errorThrown){
      //location.href = '/';
+     location.reload();
     }
   });
   }
@@ -176,8 +177,8 @@
 
     checkStatusTimer();
     setTimeout(function() {
-      setInterval(checkStatusTimer, 1000);
-    }, 1000);
+      setInterval(checkStatusTimer, 500);
+    }, 500);
 
     $('#content-container input[type=reset]').each(function(idx, btn) {
       $(btn).click(function() {

@@ -67,17 +67,20 @@ public class Entries extends Controller {
 
     public static Result stop(int room_number) {
 
-        Finder<Long, Room> finder = new Finder<Long, Room>(Long.class,
-                Room.class);
+        Finder<Long, Room> finder =
+                new Finder<Long, Room>(Long.class, Room.class);
         Room room = finder.byId(Long.valueOf(room_number));
         room.status = true;
         room.save();
 
-        Finder<Long, Entry> entryFinder = new Finder<Long, Entry>(Long.class,
-                Entry.class);
+        Finder<Long, Entry> entryFinder =
+                new Finder<Long, Entry>(Long.class, Entry.class);
         Entry entry = entryFinder.byId(room.entry_id);
         entry.selected = true;
         entry.save();
+
+        // キャッシュしている問題リストの削除
+        Questions.deleteCacheByRoomNumber(room_number);
 
         return redirect(routes.Entries.index());
     }

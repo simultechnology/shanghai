@@ -42,11 +42,13 @@ public class Questions extends Controller {
 
     public static void deleteCacheByRoomNumber(int room_number) {
         HashMap<Long, List<Question>> questionsMap = cachedQuestionList.get(room_number);
-        Set<Long> keys = questionsMap.keySet();
-        for (Long key : keys) {
-            List<Question> questions = questionsMap.get(key);
-            questions.clear();
-            questions = null;
+        if (questionsMap != null) {
+            Set<Long> keys = questionsMap.keySet();
+            for (Long key : keys) {
+                List<Question> questions = questionsMap.get(key);
+                questions.clear();
+                questions = null;
+            }
         }
     }
 
@@ -157,6 +159,13 @@ public class Questions extends Controller {
 
     public static Result list(int room_number) {
 
+        Finder<Long, Room> roomFinder =
+                new Model.Finder<Long, Room>(Long.class, Room.class);
+        Room selectedRoom = roomFinder.byId(Long.valueOf(room_number));
+        if (selectedRoom.status) {
+            return ok(questions_not_available.render());
+        }
+
         HashMap<Long, List<Question>> cachedMap = cachedQuestionList.get(room_number);
         if (cachedMap != null) {
             Set<Long> key = cachedMap.keySet();
@@ -169,12 +178,6 @@ public class Questions extends Controller {
             }
         }
 
-        Finder<Long, Room> roomFinder = new Model.Finder<Long, Room>(Long.class,
-                Room.class);
-        Room selectedRoom = roomFinder.byId(Long.valueOf(room_number));
-//        if (!selectedRoom.status) {
-//            return ok(questions_not_available.render());
-//        }
 //        selectedRoom.status = false;
 //        selectedRoom.save();
 
