@@ -1,5 +1,7 @@
 package controllers;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.SqlRow;
 import models.School;
 import models.Subject;
 import play.data.DynamicForm;
@@ -10,10 +12,7 @@ import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.subjects.*;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Subjects extends Controller {
 
@@ -104,5 +103,79 @@ public class Subjects extends Controller {
         }
 
         return redirect("/subjects");
+    }
+
+    public static List<Subject> select() {
+        Finder<String, Subject> subjectFinder =
+                new Model.Finder<String, Subject>(String.class, Subject.class);
+        List<Subject> subjects = subjectFinder.all();
+        List<Subject> newSubjects = new ArrayList<>();
+        List<Subject> restSubject = new ArrayList<>();
+        for (Subject s : subjects) {
+            if (s.priority) {
+                newSubjects.add(s);
+            }
+            else {
+                restSubject.add(s);
+            }
+        }
+
+        Map<String, Integer> validSubjects = getValidSubjectCodes();
+        Set<String> validSubjectCodes = validSubjects.keySet();
+
+
+        // 優先フラグ無しの科目数
+        int restCnt = 5 - newSubjects.size();
+
+        for (int i = 0; i < restCnt;) {
+            Random r = new Random();
+            int idx = r.nextInt(restSubject.size());
+            Subject subject = restSubject.remove(idx);
+            if (validSubjectCodes.contains(subject.subject_code)) {
+                newSubjects.add(subject);
+                i++;
+            }
+        }
+        return newSubjects;
+    }
+
+    private static boolean checkNumberOfSubject() {
+
+        Map<String, Integer> subjectCountMap = getValidSubjectCodes();
+
+        Set<String> subject_codes = subjectCountMap.keySet();
+        // 4問以上、問題が存在する科目数が5科目未満のためエラー
+        if (subject_codes.size() < 5) {
+            return false;
+        }
+
+        Finder<String, Subject> subjectFinder =
+                new Model.Finder<String, Subject>(String.class, Subject.class);
+        List<Subject> subjects = subjectFinder.where().eq("priority", true).findList();
+        for (Subject s : subjects) {
+            if (!subjectCountMap.keySet().contains(s.subject_code)) {
+                // 優先フラグ有り科目の問題数が5問未満のためエラー
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static Map<String, Integer> getValidSubjectCodes() {
+        String sql = "select subject_code, count from "
+                   + "(select subject_code, count(subject_code) count "
+                   + "from question group by subject_code ) sub "
+                   + "where count >= 4";
+
+        List<SqlRow> sqlRows = Ebean.createSqlQuery(sql).findList();
+
+        Map<String, Integer> subjectCountMap = new HashMap<>();
+        for (SqlRow r : sqlRows) {
+            String subject_code = r.getString("subject_code");
+            Integer count = r.getInteger("count");
+            subjectCountMap.put(subject_code, count);
+            System.out.printf("%s : %d件\n", subject_code, count);
+        }
+        return subjectCountMap;
     }
 }

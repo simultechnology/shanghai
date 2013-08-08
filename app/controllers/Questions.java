@@ -110,6 +110,10 @@ public class Questions extends Controller {
                 String line = br.readLine();
                 String[] columns = line.split(",");
 
+
+                Finder<String, Subject> finder =
+                        new Finder<String, Subject>(String.class, Subject.class);
+
                 while (line != null) {
                     line = br.readLine();
 
@@ -125,8 +129,6 @@ public class Questions extends Controller {
                         question.level = Integer.parseInt(val[2]);
                         String subject_code = val[3];
 
-                        Finder<String, Subject> finder =
-                                new Finder<String, Subject>(String.class, Subject.class);
                         Subject subject = finder.byId(subject_code);
 
                         question.subject = subject;
@@ -223,31 +225,10 @@ public class Questions extends Controller {
 
     private static List<Question> getQuestionList() throws Exception {
 
-        Finder<String, Subject> subjectFinder =
-                new Model.Finder<String, Subject>(String.class, Subject.class);
-        List<Subject> subjects = subjectFinder.all();
-        List<Subject> newSubjects = new ArrayList<>();
-        List<Subject> restSubject = new ArrayList<>();
-        for (Subject s : subjects) {
-            if (s.priority) {
-                newSubjects.add(s);
-            }
-            else {
-                restSubject.add(s);
-            }
-        }
+        List<Subject> subjects = Subjects.select();
 
-
-        int restCnt = 5 - newSubjects.size();
-
-        for (int i = 0; i < restCnt; i++) {
-            Random r = new Random();
-            int idx = r.nextInt(restSubject.size());
-            newSubjects.add(restSubject.get(idx));
-        }
-
-        Finder<Long, Question> finder = new Finder<Long, Question>(Long.class,
-                Question.class);
+        Finder<Long, Question> finder =
+                new Finder<Long, Question>(Long.class, Question.class);
         List<Object> questionIds = finder.findIds();
         if (questionIds.size() == 0) {
             throw new Exception();
