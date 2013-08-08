@@ -3,6 +3,7 @@ package models;
 import com.avaje.ebean.annotation.CreatedTimestamp;
 import play.db.ebean.Model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Version;
@@ -15,6 +16,9 @@ public class Subject extends Model {
     public String subject_code;
 
     public String subject_name;
+
+    @Column(columnDefinition="BOOLEAN default false")
+    public boolean priority;
 
     @CreatedTimestamp
     public Date createDate;

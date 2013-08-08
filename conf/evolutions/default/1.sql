@@ -106,6 +106,7 @@ create table score (
 create table subject (
   subject_code              varchar(255) not null,
   subject_name              varchar(255),
+  priority                  BOOLEAN default false,
   create_date               timestamp not null,
   update_date               timestamp not null,
   constraint pk_subject primary key (subject_code))

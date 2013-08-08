@@ -30,18 +30,23 @@
         <tr>
           <th>科目ID</th>
           <th>科目名</th>
+          <th>優先科目</th>
           <th>削除</th>
         </tr>
         @for((subject, i) <- subjects.zipWithIndex) {
           <tr>
             <td>@subject.subject_code</td>
             <td>@subject.subject_name</td>
+            <td>
+              <input type="checkbox" name="priorities[@i]" value="@subject.subject_code" @if(subject.priority){ checked }>
+              <input type="checkbox" name="hidden_priorities[@i]" value="@subject.subject_code" style="display: none" @if(subject.priority){ checked }>
+            </td>
             <td><input type="checkbox" name="subject_codes[@i]" value="@subject.subject_code"></td>
           </tr>
         }
         <tr>
-          <td colspan="2"></td>
-          <td><input type="submit" class="btn btn-danger btn-large" value="削除"></td>
+          <td colspan="3"></td>
+          <td><input type="submit" class="btn btn-success btn-large" value="更新"></td>
         </tr>
       </table>
     }

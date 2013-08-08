@@ -13,6 +13,7 @@ import views.html.subjects.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Subjects extends Controller {
 
@@ -58,20 +59,50 @@ public class Subjects extends Controller {
 
 
     public static Result delete() {
-        String[] params = {"subject_codes"};
+        String[] params = {"subject_codes", "priorities"};
         DynamicForm input = Form.form();
         input = input.bindFromRequest(params);
         Map<String,String> data = input.data();
 
-        Collection<String> values = data.values();
-        if (values.size() > 0) {
+        Set<String> keys = data.keySet();
+
+        if (keys.size() > 0) {
             Finder<String, Subject> finder =
                     new Model.Finder<String, Subject>(String.class, Subject.class);
-            for (String subject_code : values) {
-                Subject subject = finder.byId(subject_code);
-                subject.delete();
+
+            for (String key : keys) {
+                Subject subject = finder.byId(data.get(key));
+                if (key.contains("subject_codes")) {
+                    if (subject != null) {
+                        subject.delete();
+                    }
+                }
+                else if (key.contains("hidden_priorities")) {
+                    String priorityKey = key.replace("hidden_", "");
+                    // 優先フラグがONのままで変化のない場合
+                    // キーを削除する
+                    if (keys.contains(priorityKey)) {
+                        //keys.remove(priorityKey);
+                    }
+                    else {
+                        String id = data.get(priorityKey);
+                        if (id == null) {
+                            if (subject != null) {
+                                subject.priority = false;
+                                subject.save();
+                            }
+                        }
+                    }
+                }
+                else if (key.startsWith("priorities")) {
+                    if (subject != null) {
+                        subject.priority = true;
+                        subject.save();
+                    }
+                }
             }
         }
+
         return redirect("/subjects");
     }
 }
