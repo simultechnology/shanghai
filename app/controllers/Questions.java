@@ -222,6 +222,30 @@ public class Questions extends Controller {
     }
 
     private static List<Question> getQuestionList() throws Exception {
+
+        Finder<String, Subject> subjectFinder =
+                new Model.Finder<String, Subject>(String.class, Subject.class);
+        List<Subject> subjects = subjectFinder.all();
+        List<Subject> newSubjects = new ArrayList<>();
+        List<Subject> restSubject = new ArrayList<>();
+        for (Subject s : subjects) {
+            if (s.priority) {
+                newSubjects.add(s);
+            }
+            else {
+                restSubject.add(s);
+            }
+        }
+
+
+        int restCnt = 5 - newSubjects.size();
+
+        for (int i = 0; i < restCnt; i++) {
+            Random r = new Random();
+            int idx = r.nextInt(restSubject.size());
+            newSubjects.add(restSubject.get(idx));
+        }
+
         Finder<Long, Question> finder = new Finder<Long, Question>(Long.class,
                 Question.class);
         List<Object> questionIds = finder.findIds();
