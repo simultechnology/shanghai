@@ -2,5 +2,29 @@
             <footer>
             </footer>
         </div> <!-- /container -->
+            <script type="text/javascript">
+              $('#list-sample').click(function() {
+                var that = this;
+                $.ajax({
+                  url:'@routes.Subjects.check',
+                  type:'get',
+                  dataType:'json',
+                  success:function(json) {
+                    if (json.status === 'OK') {
+                      location.href = that.href;
+                    }
+                  },
+                  error:function(XMLHttpRequest, textStatus, errorThrown){
+                    var json = XMLHttpRequest.responseText;
+                    var obj = $.parseJSON(json);
+                    if (obj.status === 'NG') {
+                      alert(obj.message);
+                      return false;
+                    }
+                  }
+                });
+                return false;
+              });
+            </script>
     </body>
 </html>

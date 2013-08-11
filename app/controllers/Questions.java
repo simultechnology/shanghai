@@ -1,6 +1,7 @@
 package controllers;
 
 import com.avaje.ebean.ExpressionList;
+import com.avaje.ebean.Query;
 import models.Entry;
 import models.Question;
 import models.Room;
@@ -227,20 +228,46 @@ public class Questions extends Controller {
 
         List<Subject> subjects = Subjects.select();
 
+        String clause = makeSqlCond(subjects);
         Finder<Long, Question> finder =
                 new Finder<Long, Question>(Long.class, Question.class);
-        List<Object> questionIds = finder.findIds();
-        if (questionIds.size() == 0) {
+        Query<Question> query = finder.where(String.format("subject_code in (%s)", clause));
+        List<Question> questions = query.findList();
+        if (questions.size() == 0) {
             throw new Exception();
         }
 
-        Set<Long> randomIds = new HashSet<Long>();
+        Set<Long> randomIds = new HashSet<>();
 
-        int questionsTotalNum = questionIds.size();
+        int questionsTotalNum = questions.size();
+
+        Map<String, Integer> subjectCountMap = new HashMap<>();
+        for (Subject s : subjects) {
+            subjectCountMap.put(s.subject_code, 0);
+        }
+
+        List<Integer> rndIdxList = new ArrayList<>();
         while (randomIds.size() < 20) {
             Random rand = new Random();
             int idx = rand.nextInt(questionsTotalNum);
-            randomIds.add((Long) questionIds.get(idx));
+            if (rndIdxList.contains(idx)) {
+                continue;
+            }
+            else {
+                rndIdxList.add(idx);
+            }
+            Question question = questions.get(idx);
+            Integer subjectCount = subjectCountMap.get(question.subject.subject_code);
+            if (subjectCount < 4) {
+                System.out.println(subjectCount);
+                String sc = question.subject.subject_code;
+                if (!randomIds.contains(sc)) {
+                    subjectCount += 1;
+                    subjectCountMap.put(question.subject.subject_code, subjectCount);
+                    randomIds.add(question.question_id);
+                    System.out.println(randomIds.size());
+                }
+            }
         }
 
         List<Long> randomIdList = new ArrayList<Long>();
@@ -248,5 +275,17 @@ public class Questions extends Controller {
 
         ExpressionList<Question> expressionList = finder.where().idIn(randomIdList);
         return expressionList.findList();
+    }
+
+    private static String makeSqlCond(List<Subject> subjects) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < subjects.size(); i++) {
+            String comma = "";
+            if (i > 0) {
+                comma =",";
+            }
+            sb.append(String.format("%s '%s'", comma, subjects.get(i).subject_code));
+        }
+        return sb.toString();
     }
 }

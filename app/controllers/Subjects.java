@@ -4,13 +4,17 @@ import com.avaje.ebean.Ebean;
 import com.avaje.ebean.SqlRow;
 import models.School;
 import models.Subject;
+import org.codehaus.jackson.node.ObjectNode;
 import play.data.DynamicForm;
 import play.data.Form;
 import play.db.ebean.Model;
 import play.db.ebean.Model.Finder;
+import play.mvc.BodyParser;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.subjects.*;
+import play.libs.Json;
+import play.libs.Json.*;
 
 import java.util.*;
 
@@ -123,7 +127,6 @@ public class Subjects extends Controller {
         Map<String, Integer> validSubjects = getValidSubjectCodes();
         Set<String> validSubjectCodes = validSubjects.keySet();
 
-
         // 優先フラグ無しの科目数
         int restCnt = 5 - newSubjects.size();
 
@@ -139,14 +142,18 @@ public class Subjects extends Controller {
         return newSubjects;
     }
 
-    private static boolean checkNumberOfSubject() {
+    @BodyParser.Of(play.mvc.BodyParser.Json.class)
+    public static Result check() {
+        ObjectNode result = Json.newObject();
 
         Map<String, Integer> subjectCountMap = getValidSubjectCodes();
 
         Set<String> subject_codes = subjectCountMap.keySet();
         // 4問以上、問題が存在する科目数が5科目未満のためエラー
         if (subject_codes.size() < 5) {
-            return false;
+            result.put("status", "NG");
+            result.put("message", "出題可能な科目が不足しています。");
+            return badRequest(result);
         }
 
         Finder<String, Subject> subjectFinder =
@@ -154,11 +161,15 @@ public class Subjects extends Controller {
         List<Subject> subjects = subjectFinder.where().eq("priority", true).findList();
         for (Subject s : subjects) {
             if (!subjectCountMap.keySet().contains(s.subject_code)) {
-                // 優先フラグ有り科目の問題数が5問未満のためエラー
-                return false;
+                // 優先フラグ有り科目の問題数が4問未満のためエラー
+                result.put("status", "NG");
+                result.put("message", "優先科目の問題数が不足しています。");
+                return badRequest(result);
             }
         }
-        return true;
+        result.put("status", "OK");
+        result.put("message", "OK");
+        return ok(result);
     }
 
     private static Map<String, Integer> getValidSubjectCodes() {

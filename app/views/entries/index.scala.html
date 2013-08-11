@@ -63,13 +63,13 @@
       <td style="border-right: 1px solid #666">
         <div class="span5" id="left-container">
     <h3>Room1対象選択</h3>
-    <ul class="nav nav-tabs nav-stacked" id="">
+    <ul class="nav nav-tabs nav-stacked">
       @for(entry <- entries) {
         <li value="@entry.entry_id"><a>@entry.school.school_name,@entry.school_year-@entry.group_name,@entry.level</a></li>
       }
     </ul>
     @helper.form(action = routes.Entries.add, 'method -> "post") {
-      <input type="text" name="name" class="span5 name" readonly>
+      <input type="text" name="name" class="span5 name" readonly id="name1">
       <br>
       <input type="text" name="school_year" class="span1 school_year" readonly>
       <input type="text" name="group_name" class="span2 group_name" readonly>
@@ -87,13 +87,13 @@
       <td>
         <div class="span5" id="right-container">
     <h3>Room2対象選択</h3>
-    <ul class="nav nav-tabs nav-stacked" id="">
+    <ul class="nav nav-tabs nav-stacked">
       @for(entry <- entries) {
         <li value="@entry.entry_id"><a>@entry.school.school_name,@entry.school_year-@entry.group_name,@entry.level</a></li>
       }
     </ul>
     @helper.form(action = routes.Entries.add, 'method -> "post") {
-      <input type="text" name="name" class="span5 name" readonly>
+      <input type="text" name="name" class="span5 name" readonly id="name2">
       <br>
       <input type="text" name="school_year" class="span1 school_year" readonly>
       <input type="text" name="group_name" class="span2 group_name" readonly>
@@ -142,33 +142,33 @@
 
   function checkStatusTimer() {
 
-  $.ajax({
-    url:'@routes.Rooms.check',
-    type:'get',
-    dataType:'xml',
-    success:function(xml) {
-      var rooms = $(xml).find('room');
-      var submitButtons = $('#content-container input[type=submit]');
-      var resets = $('#content-container input[type=reset]');
-      $(rooms).each(function(idx, room) {
-        var room_number = Number($(room).find('room_number').text()) - 1;
-        var status = $(room).find('status').text();
-        if (status === 'OK') {
-          $(submitButtons[room_number]).attr('disabled', false);
-          $(resets[room_number]).attr('disabled', true);
+    $.ajax({
+      url:'@routes.Rooms.check',
+      type:'get',
+      dataType:'xml',
+      success:function(xml) {
+        var rooms = $(xml).find('room');
+        var submitButtons = $('#content-container input[type=submit]');
+        var resets = $('#content-container input[type=reset]');
+        $(rooms).each(function(idx, room) {
+          var room_number = Number($(room).find('room_number').text()) - 1;
+          var status = $(room).find('status').text();
+          if (status === 'OK') {
+            $(submitButtons[room_number]).attr('disabled', false);
+            $(resets[room_number]).attr('disabled', true);
 
-        }
-        else {
-          $(submitButtons[room_number]).attr('disabled', true);
-          $(resets[room_number]).attr('disabled', false);
-        }
-      });
-    },
-   error:function(XMLHttpRequest, textStatus, errorThrown){
-     //location.href = '/';
-     location.reload();
-    }
-  });
+          }
+          else {
+            $(submitButtons[room_number]).attr('disabled', true);
+            $(resets[room_number]).attr('disabled', false);
+          }
+        });
+      },
+     error:function(XMLHttpRequest, textStatus, errorThrown){
+       //location.href = '/';
+       location.reload();
+      }
+    });
   }
 
   $(document).ready(function() {
@@ -184,6 +184,38 @@
       $(btn).click(function() {
         var room_number = idx + 1;
         location.href = '/entries/stop/' + room_number;
+      });
+    });
+
+    $('#content-container input[type=submit]').each(function(idx, btn) {
+      $(btn).click(function() {
+        var room_number = idx + 1;
+        var inputVal = $('#name' + room_number).val();
+        if (!inputVal) {
+          alert('エントリーを選択して下さい')
+          return false;
+        }
+        $.ajax({
+          url:'@routes.Subjects.check',
+          type:'get',
+          dataType:'json',
+          success:function(json) {
+            console.log(json);
+            if (json.status === 'OK') {
+              $($('form')[idx]).submit();
+            }
+          },
+          error:function(XMLHttpRequest, textStatus, errorThrown){
+            var json = XMLHttpRequest.responseText;
+            console.log(json);
+            var obj = $.parseJSON(json);
+            if (obj.status === 'NG') {
+              alert(obj.message);
+              return false;
+            }
+          }
+        });
+        return false;
       });
     });
   });
