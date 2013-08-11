@@ -61,7 +61,7 @@ public class Subjects extends Controller {
     }
 
 
-    public static Result delete() {
+    public static Result update() {
         String[] params = {"subject_codes", "priorities"};
         DynamicForm input = Form.form();
         input = input.bindFromRequest(params);

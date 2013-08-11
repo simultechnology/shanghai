@@ -28,10 +28,11 @@ POST    /entries/add                        controllers.Entries.add()
 GET     /entries/stop/:room_number          controllers.Entries.stop(room_number :Integer)
 GET     /results/test                       controllers.Results.test()
 POST    /results/complete                   controllers.Results.complete()
+GET     /results/log                        controllers.Results.log()
 GET     /subjects                           controllers.Subjects.index()
 GET     /subjects/check                     controllers.Subjects.check()
 POST    /subjects/master                    controllers.Subjects.master()
-POST    /subjects/delete                    controllers.Subjects.delete()
+POST    /subjects/update                    controllers.Subjects.update()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

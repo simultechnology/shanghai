@@ -72,15 +72,15 @@
                         <li class="dropdown">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">学校登録<b class="caret"></b></a>
                           <ul class="dropdown-menu">
-                            <li><a href="/schools/entry">学校マスタ登録</a></li>
-                            <li><a href="/schools">学校登録</a></li>
+                            <li><a href="@routes.Schools.entry">学校マスタ登録</a></li>
+                            <li><a href="@routes.Schools.index">学校登録</a></li>
                             <!--<li class="divider"></li>-->
                             <!--<li class="nav-header">Nav header</li>-->
                             <!--<li><a href="#">Separated link</a></li>-->
                             <!--<li><a href="#">One more separated link</a></li>-->
                           </ul>
                         </li>
-                        <li><a href="/rooms/check">部屋番号ステータスチェックIF</a></li>
+                        <li><a href="@routes.Rooms.check">部屋番号IF</a></li>
                         <li class="dropdown">
                           <a href="#" class="dropdown-toggle" data-toggle="dropdown">問題登録<b class="caret"></b></a>
                           <ul class="dropdown-menu">
@@ -94,6 +94,7 @@
                         </li>
                         <li><a href="@routes.Questions.listSample" id="list-sample">問題取得IF（サンプル）</a></li>
                         <li><a href="@routes.Results.test">リザルト投稿IF(テスト)</a></li>
+                        <li><a href="@routes.Results.log">ログ出力</a></li>
                       </ul>
                     </div><!--/.nav-collapse -->
                 </div>

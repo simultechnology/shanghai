@@ -196,6 +196,7 @@ public class Questions extends Controller {
         result.school_year = entry.school_year;
         result.school = entry.school;
         result.group_name = entry.group_name;
+        result.level = entry.level;
         result.save();
         Long result_id = result.result_id;
 

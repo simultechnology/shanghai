@@ -1,5 +1,8 @@
 package controllers;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.SqlRow;
+import models.Question;
 import models.Room;
 import models.Score;
 import models.ScorePK;
@@ -9,7 +12,9 @@ import play.db.ebean.Model.Finder;
 import play.mvc.Controller;
 import play.mvc.Result;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 import views.html.results.*;
 import views.xml.results.*;
@@ -95,6 +100,74 @@ public class Results extends Controller {
         map.put(key, content);
         return map;
     }
+
+    public static Result log() {
+
+        // Prepare a chunked text stream
+        Chunks<String> chunks = new StringChunks() {
+
+            // Called when the stream is ready
+            public void onReady(Chunks.Out<String> out) {
+                registerOutChannelSomewhere(out);
+            }
+        };
+
+        String strDate =
+                new SimpleDateFormat("yyyyMMddhhmmssSSS").format(new Date());
+        String fileName = String.format("log%s.csv", strDate);
+        response().setContentType("application/x-download");
+        response().setHeader("Content-disposition",
+                String.format("attachment; filename=%s", fileName));
+
+        return ok(chunks);
+    }
+
+    public static void registerOutChannelSomewhere(Chunks.Out<String> out) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddhhmmss");
+
+        String sql =
+                "select school_name, school_year, group_name, subject_name, " +
+                "level, score, correct_number, mistake_number, " +
+                "time_over_number, total_number, time, s.update_date update_date " +
+                "from result r, score s, school, subject " +
+                "where r.result_id = s.result_id " +
+                "and r.school_id = school.school_id " +
+                "and s.subject_code = subject.subject_code";
+
+        List<SqlRow> sqlRows = Ebean.createSqlQuery(sql).findList();
+
+        for (SqlRow r : sqlRows) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(r.getString("school_name"));
+            sb.append(",");
+            sb.append(r.getInteger("school_year"));
+            sb.append(",");
+            sb.append(r.getString("group_name"));
+            sb.append(",");
+            sb.append(r.getString("subject_name"));
+            sb.append(",");
+            sb.append(r.getInteger("level"));
+            sb.append(",");
+            sb.append(r.getInteger("score"));
+            sb.append(",");
+            sb.append(r.getInteger("correct_number"));
+            sb.append(",");
+            sb.append(r.getInteger("mistake_number"));
+            sb.append(",");
+            sb.append(r.getInteger("time_over_number"));
+            sb.append(",");
+            sb.append(r.getInteger("total_number"));
+            sb.append(",");
+            sb.append(r.getInteger("time"));
+            sb.append(",");
+            sb.append(sdf.format(r.getDate("update_date")));
+            sb.append("\n");
+            out.write(sb.toString());
+        }
+        out.close();
+    }
+
 
     public static Result test() {
 
