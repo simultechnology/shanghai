@@ -106,6 +106,8 @@ public class Questions extends Controller {
 
             BufferedReader br = null;
             try {
+                deleteAll();
+
                 br = new BufferedReader(new FileReader(file));
                 StringBuilder sb = new StringBuilder();
                 String line = br.readLine();
@@ -157,6 +159,15 @@ public class Questions extends Controller {
         } else {
             flash("error", "Missing file");
             return redirect(routes.Questions.file());
+        }
+    }
+
+    private static void deleteAll() {
+        Finder<Long, Question> questionFinder =
+        new Finder<Long, Question>(Long.class, Question.class);
+        List<Question> questions = questionFinder.all();
+        for (Question q : questions) {
+            q.delete();
         }
     }
 
