@@ -73,7 +73,7 @@ public class Results extends Controller {
             Map<String, Integer> map = subjectCodeMap.get(subject_code);
             sc.correct_number = map.get("correct_number");
             sc.mistake_number = map.get("mistake_number");
-            sc.time = map.get("time_over_number");
+            sc.time_over_number = map.get("time_over_number");
             sc.total_number = map.get("total_number");
             sc.time = map.get("time");
             sc.save();
