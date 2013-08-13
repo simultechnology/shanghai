@@ -38,7 +38,7 @@
             <td>@subject.subject_code</td>
             <td>@subject.subject_name</td>
             <td>
-              <input type="checkbox" name="priorities[@i]" value="@subject.subject_code" @if(subject.priority){ checked }>
+              <input type="checkbox" name="priorities[@i]" class="properties" value="@subject.subject_code" @if(subject.priority){ checked }>
               <input type="checkbox" name="hidden_priorities[@i]" value="@subject.subject_code" style="display: none" @if(subject.priority){ checked }>
             </td>
             <td><input type="checkbox" name="subject_codes[@i]" value="@subject.subject_code"></td>
@@ -53,3 +53,16 @@
   </div>
 }
 @template_lower()
+
+<script type="text/javascript">
+  $('input[type=submit]').click(function() {
+    var checkedCnt = $("form input:checkbox:checked").filter(".properties").length;
+    if (checkedCnt > 5) {
+      alert('優先科目は5科目以内です。');
+    }
+    else {
+      $('form').submit();
+    }
+    return false;
+  });
+</script>
