@@ -1,7 +1,9 @@
 package controllers;
 
+import com.avaje.ebean.Ebean;
 import com.avaje.ebean.ExpressionList;
 import com.avaje.ebean.Query;
+import com.avaje.ebean.TxRunnable;
 import models.Entry;
 import models.Question;
 import models.Room;
@@ -102,64 +104,79 @@ public class Questions extends Controller {
         if (csv != null) {
             String fileName = csv.getFilename();
             String contentType = csv.getContentType();
-            File file = csv.getFile();
+            final File file = csv.getFile();
 
-            BufferedReader br = null;
             try {
-                deleteAll();
+                Ebean.execute(new TxRunnable() {
 
-                br = new BufferedReader(new FileReader(file));
-                StringBuilder sb = new StringBuilder();
-                String line = br.readLine();
-                String[] columns = line.split(",");
+                    @Override
+                    public void run() {
+                        deleteAll();
 
+                        BufferedReader br = null;
+                        try {
+                            br = new BufferedReader(new FileReader(file));
+                            StringBuilder sb = new StringBuilder();
+                            String line = br.readLine();
+                            String[] columns = line.split(",");
 
-                Finder<String, Subject> finder =
-                        new Finder<String, Subject>(String.class, Subject.class);
+                            Finder<String, Subject> finder =
+                                    new Finder<String, Subject>(String.class, Subject.class);
 
-                while (line != null) {
-                    line = br.readLine();
+                            while (line != null) {
+                                line = br.readLine();
 
-                    if (line != null) {
-                        String[] val = CSVUtils.parseLine(line.toString());
-
-                        if (val[1] == null || val[1].length() == 0) {
-                            continue;
+                                if (line != null) {
+                                    String[] val = CSVUtils.parseLine(line.toString());
+                                    if (val[1] == null || val[1].length() == 0) {
+                                        continue;
+                                    }
+                                    insertByOne(finder, val);
+                                }
+                            }
                         }
-
-                        Question question = new Question();
-                        question.school_year = Integer.parseInt(val[1]);
-                        question.level = Integer.parseInt(val[2]);
-                        String subject_code = val[3];
-
-                        Subject subject = finder.byId(subject_code);
-
-                        question.subject = subject;
-                        question.content = val[4];
-                        question.choice1 = val[5];
-                        question.choice2 = val[6];
-                        question.choice3 = val[7];
-                        question.choice4 = val[8];
-                        question.answer = Integer.parseInt(val[9]);
-                        question.answer_type = Integer.parseInt(val[10]);
-                        question.save();
+                        catch (Exception e) {
+                            throw new RuntimeException();
+                        }
+                        finally {
+                            if (br != null) {
+                                try {
+                                    br.close();
+                                }
+                                catch (IOException e) {
+                                    throw new RuntimeException();
+                                }
+                            }
+                        }
                     }
-                }
-                return ok(end.render("ファイルを正常に取り込みました。"));
+                });
             } catch (Exception e) {
-                return ok(end.render("ファイルを正常に取り込む異ができませんでした。"));
-            } finally {
-                if (br != null) {
-                    try {
-                        br.close();
-                    } catch (IOException e) {
-                    }
-                }
+                return ok(end.render("ファイルを正常に取り込むことができませんでした。"));
             }
         } else {
             flash("error", "Missing file");
             return redirect(routes.Questions.file());
         }
+        return ok(end.render("ファイルを正常に取り込みました。"));
+    }
+
+    private static void insertByOne(Finder<String, Subject> finder, String[] val) {
+        Question question = new Question();
+        question.school_year = Integer.parseInt(val[1]);
+        question.level = Integer.parseInt(val[2]);
+        String subject_code = val[3];
+
+        Subject subject = finder.byId(subject_code);
+
+        question.subject = subject;
+        question.content = val[4];
+        question.choice1 = val[5];
+        question.choice2 = val[6];
+        question.choice3 = val[7];
+        question.choice4 = val[8];
+        question.answer = Integer.parseInt(val[9]);
+        question.answer_type = Integer.parseInt(val[10]);
+        question.save();
     }
 
     private static void deleteAll() {
@@ -191,9 +208,6 @@ public class Questions extends Controller {
                 return ok(questions.render(list, id));
             }
         }
-
-//        selectedRoom.status = false;
-//        selectedRoom.save();
 
         Finder<Long, Entry> entryFinder = new Model.Finder<Long, Entry>(Long.class,
                 Entry.class);

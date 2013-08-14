@@ -1,6 +1,6 @@
 @(msg1: String)(msg2: String)(subjects : List[models.Subject])
 @template_upper()
-@helper.form(action = routes.Subjects.master, 'method -> "post") {
+@helper.form(action = routes.Subjects.master, 'method -> "post", 'id -> "insert-form") {
   <div class="row">
     <span class="span5">
       <label>科目コード</label>
@@ -25,7 +25,7 @@
 }
 @if(subjects != null && subjects.size() > 0) {
   <div>
-    @helper.form(action = routes.Subjects.update, 'method -> "post") {
+    @helper.form(action = routes.Subjects.update, 'method -> "post", 'id -> "update-form") {
       <table class="table">
         <tr>
           <th>科目ID</th>
@@ -55,13 +55,30 @@
 @template_lower()
 
 <script type="text/javascript">
-  $('input[type=submit]').click(function() {
+  $('#insert-form input[type=submit]').click(function() {
+    var isError = false;
+    $("#insert-form input[type=text]").each(function (idx, item) {
+      var val = $(item).val();
+      if (typeof val === 'undefined' || val.length === 0) {
+        isError = true;
+      }
+    });
+    if (isError) {
+      alert("科目コードと科目名は必須項目です。");
+    }
+    else {
+      $('#insert-form').submit();
+    }
+    return false;
+  });
+
+  $('#update-form input[type=submit]').click(function() {
     var checkedCnt = $("form input:checkbox:checked").filter(".properties").length;
     if (checkedCnt > 5) {
       alert('優先科目は5科目以内です。');
     }
     else {
-      $('form').submit();
+      $('#update-form').submit();
     }
     return false;
   });

@@ -2,7 +2,8 @@ package controllers;
 
 import com.avaje.ebean.Ebean;
 import com.avaje.ebean.SqlRow;
-import models.School;
+import com.avaje.ebean.TxRunnable;
+import models.Question;
 import models.Subject;
 import org.codehaus.jackson.node.ObjectNode;
 import play.data.DynamicForm;
@@ -25,7 +26,7 @@ public class Subjects extends Controller {
         Finder<Long, Subject> finder =
                 new Model.Finder<Long, Subject>(Long.class, Subject.class);
         List<Subject> subjects = finder.where()
-                                       .orderBy("createDate DESC")
+                                       .orderBy("updateDate DESC")
                                        .findList();
 
         return ok(index.render("", "", subjects));
@@ -65,48 +66,65 @@ public class Subjects extends Controller {
         String[] params = {"subject_codes", "priorities"};
         DynamicForm input = Form.form();
         input = input.bindFromRequest(params);
-        Map<String,String> data = input.data();
+        final Map<String,String> data = input.data();
 
-        Set<String> keys = data.keySet();
+        final Set<String> keys = data.keySet();
 
         if (keys.size() > 0) {
-            Finder<String, Subject> finder =
+            final Finder<String, Subject> finder =
                     new Model.Finder<String, Subject>(String.class, Subject.class);
 
-            for (String key : keys) {
-                Subject subject = finder.byId(data.get(key));
-                if (key.contains("subject_codes")) {
-                    if (subject != null) {
-                        subject.delete();
-                    }
-                }
-                else if (key.contains("hidden_priorities")) {
-                    String priorityKey = key.replace("hidden_", "");
-                    // 優先フラグがONのままで変化のない場合
-                    // キーを削除する
-                    if (keys.contains(priorityKey)) {
-                        //keys.remove(priorityKey);
-                    }
-                    else {
-                        String id = data.get(priorityKey);
-                        if (id == null) {
+            final Finder<Long, Question> questionFinder =
+                    new Finder<Long, Question>(Long.class, Question.class);
+
+            Ebean.execute(new TxRunnable() {
+
+                @Override
+                public void run() {
+                    for (String key : keys) {
+                        Subject subject = finder.byId(data.get(key));
+                        if (key.contains("subject_codes")) {
+                            delete(subject, questionFinder);
+                        }
+                        else if (key.contains("hidden_priorities")) {
+                            String priorityKey = key.replace("hidden_", "");
+                            // 優先フラグがONのままで変化のない場合
+                            // キーを削除する
+                            if (keys.contains(priorityKey)) {
+                                //keys.remove(priorityKey);
+                            }
+                            else {
+                                String id = data.get(priorityKey);
+                                if (id == null) {
+                                    if (subject != null) {
+                                        subject.priority = false;
+                                        subject.save();
+                                    }
+                                }
+                            }
+                        }
+                        else if (key.startsWith("priorities")) {
                             if (subject != null) {
-                                subject.priority = false;
+                                subject.priority = true;
                                 subject.save();
                             }
                         }
                     }
                 }
-                else if (key.startsWith("priorities")) {
-                    if (subject != null) {
-                        subject.priority = true;
-                        subject.save();
-                    }
-                }
-            }
+            });
         }
-
         return redirect("/subjects");
+    }
+
+    private static void delete(Subject subject, Finder<Long, Question> questionFinder) {
+        if (subject != null) {
+            List<Question> questions =
+                    questionFinder.where().eq("subject_code", subject.subject_code).findList();
+            for (Question question : questions) {
+                question.delete();
+            }
+            subject.delete();
+        }
     }
 
     public static List<Subject> select() {
